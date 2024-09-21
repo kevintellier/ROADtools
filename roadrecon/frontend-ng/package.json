@@ -28,6 +28,10 @@
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
+<<<<<<< HEAD
     "vite": "^5.4.7"
+=======
+    "vite": "^5.4.5"
+>>>>>>> c62f4b2 (added package.json)
   }
 }
