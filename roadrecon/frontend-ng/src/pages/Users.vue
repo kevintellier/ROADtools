@@ -12,16 +12,19 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6">
-        <UsersTable :columns="columns" :rows="users" />
+        <UsersTable :columns="columns" :values="users" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import { ref } from 'vue'
-import UsersTable from '../partials/dashboard/UsersTable.vue';
+import { ref, toRaw } from 'vue'
+import UsersTable from '../partials/dashboard/UsersTable.vue'
+import { FilterMatchMode } from '@primevue/core/api';
 import axios from 'axios'
+
+const filters = ref();
 
 export default {
   name: 'Users',
@@ -33,34 +36,41 @@ export default {
   },
   data(){
     return {
-      users: {},
+      mappedUsers: [], // mapped user data
+      users: [],
       columns: [
-        "Name",
-        "UserPrincipalName",
-        "Enabled",
-        "Email",
-        "Department",
-        "Last password change",
-        "Job title",
-        "Mobile",
-        "Account source",
-        "Account type"
-      ]
+        { field: 'displayName', header: 'Name' },
+        { field: 'userPrincipalName', header: 'UserPrincipalName' },
+        { field: 'accountEnabled', header: 'Enabled' },
+        { field: 'mail', header: 'Email' },
+        { field: 'department', header: 'Department' },
+        { field: 'lastPasswordChangeDateTime', header: 'Last password change' },
+        { field: 'jobTitle', header: 'Job title' },
+        { field: 'mobile', header: 'Mobile' },
+        { field: 'objectType', header: 'Account type' },
+        { field: 'member', header: 'User type' },
+      ],
+      filterFields:["displayName"],
+      filters: {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      },
     }
   },
   mounted() {
     axios
-      .get("/api/users")
-      .then(response => {
-        const {displayName, accountEnabled} = response.data
-        this.users = {displayName, accountEnabled}
+        .get("/api/users")
+        .then(response => {
+            const users = response.data
+
+            console.log("API data:", users)
+
+            this.users=response.data;
+        })
+        .catch(error => {
+            console.log(error)
       })
-      .catch(error => {
-        console.log(error)
-        this.errored = true
-      })
-      console.log("Users:")
-      console.log(this.users)
   }
 }
+
+const users = ref();
 </script>

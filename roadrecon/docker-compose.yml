@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: frontend-ng
+    network_mode: "host"
+    volumes:
+      - ./frontend-ng/:/usr/src/app/
+  backend:
+    build:
+      context: .
+    network_mode: "host"
