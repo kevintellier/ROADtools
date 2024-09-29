@@ -15,6 +15,7 @@
 
         <!-- Header: Left side -->
         <div class="flex">
+          <Button icon="pi pi-arrow-left" label="Back" v-show="$route.path != '/'" @click="goBack()" />
 
           <!-- Hamburger button -->
           <button class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 lg:hidden" @click.stop="$emit('toggle-sidebar')" aria-controls="sidebar" :aria-expanded="sidebarOpen">
@@ -46,6 +47,7 @@ import Notifications from '../components/DropdownNotifications.vue'
 import Help from '../components/DropdownHelp.vue'
 import ThemeToggle from '../components/ThemeToggle.vue'
 import UserMenu from '../components/DropdownProfile.vue'
+import Button from 'primevue/button';
 
 export default {
   name: 'Header',
@@ -59,6 +61,14 @@ export default {
     Help,
     ThemeToggle,
     UserMenu,
+    Button
+  },
+  methods:{
+    goBack() {
+      if(this.$router.path !== "/"){
+        this.$router.back()
+      }
+    }
   },
   setup() {
     const searchModalOpen = ref(false)

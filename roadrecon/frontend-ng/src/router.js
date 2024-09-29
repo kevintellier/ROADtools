@@ -9,6 +9,7 @@ import Applications from './pages/Applications.vue'
 import ServicePrincipals from './pages/ServicePrincipals.vue'
 import ApplicationRoles from './pages/ApplicationRoles.vue'
 import OAuth2Permissions from './pages/OAuth2Permissions.vue'
+import RowDetail from './pages/RowDetail.vue'
 
 const routerHistory = createWebHistory()
 
@@ -72,6 +73,12 @@ export const routes = [
     name: 'Oauth2 Permissions',
     component: OAuth2Permissions,
     props: {name: 'OAuth2 Permissions'}
+  },
+  {
+    path: '/:objectType/:objectId',
+    name: 'RowDetail',
+    component: RowDetail,
+    hideNavbar: true,
   }
 ]
 

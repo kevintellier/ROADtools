@@ -10,4 +10,6 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 RUN npm install --include=dev
 
+RUN apt install -y vi
+
 CMD [ "npm","run","dev"]

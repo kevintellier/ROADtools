@@ -43,7 +43,7 @@
             <span class="lg:hidden lg:sidebar-expanded:block 2xl:block">Pages</span>
           </h3>
           <ul class="mt-3" >
-            <router-link v-for="route in sidebarRoutes" :to="route.path" custom v-slot="{ href, navigate, isExactActive }">
+            <router-link v-if="!route" v-for="route in sidebarRoutes" :to="route.path" custom v-slot="{ href, navigate, isExactActive }">
               <li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-[linear-gradient(135deg,var(--tw-gradient-stops))]" :class="isExactActive && 'from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]'">
                 <a class="block text-gray-800 dark:text-gray-100 truncate transition" :class="isExactActive ? '' : 'hover:text-gray-900 dark:hover:text-white'" :href="href" @click="navigate">
                   <div class="flex items-center">
@@ -94,8 +94,9 @@ export default {
     SidebarLinkGroup,
   },
   data(){
+
     return {
-      sidebarRoutes: routes
+      sidebarRoutes: routes.filter(route => route.hideNavbar !== true)
     }
   },
   setup(props, { emit }) {
