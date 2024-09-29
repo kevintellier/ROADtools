@@ -38,7 +38,7 @@ import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
 
 export default {
-  name: 'UsersTable',
+  name: 'ObjectTable',
   props: {
     columns: {
       type: Array,

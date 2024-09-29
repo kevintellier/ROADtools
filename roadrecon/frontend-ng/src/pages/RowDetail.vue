@@ -69,7 +69,7 @@
                             </TabList>
                             <TabPanels>
                                 <TabPanel v-for="item in object.tabItems" :key="item.attribute" :value="item.value">
-                                    <UsersTable :columns="item.columns" :values="object[item.attribute]" :filterFields="item.filterFields"
+                                    <ObjectTable :columns="item.columns" :values="object[item.attribute]" :filterFields="item.filterFields"
                                         :filters="filters" />
                                 </TabPanel>
                             </TabPanels>
@@ -83,7 +83,7 @@
 
 <script>
 import { ref, toRaw } from 'vue'
-import UsersTable from '../partials/dashboard/UsersTable.vue'
+import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import { FilterMatchMode } from '@primevue/core/api';
 import Tabs from 'primevue/tabs';
 import TabList from 'primevue/tablist';
@@ -100,7 +100,7 @@ const filters = ref();
 export default {
     name: 'RowDetail',
     components: {
-        UsersTable,
+        ObjectTable,
         Card,
         Tab,
         Tag,

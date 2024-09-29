@@ -12,7 +12,7 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6">
-        <UsersTable :columns="columns" :values="users" :filterFields="filterFields" :filters="filters" />
+        <ObjectTable :columns="columns" :values="users" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
   </main>
@@ -20,7 +20,7 @@
 
 <script>
 import { ref, toRaw } from 'vue'
-import UsersTable from '../partials/dashboard/UsersTable.vue'
+import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import { FilterMatchMode } from '@primevue/core/api';
 import axios from 'axios'
 
@@ -32,7 +32,7 @@ export default {
     name: String
   },
   components: {
-    UsersTable
+    ObjectTable
   },
   data(){
     return {
