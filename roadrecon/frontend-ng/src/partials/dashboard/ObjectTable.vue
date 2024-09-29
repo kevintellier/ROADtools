@@ -60,7 +60,6 @@ export default {
   methods:{
     goToDetail($event) {
       this.$router.push({ name: 'RowDetail', params: { objectId: this.values[$event.index].objectId, objectType: this.values[$event.index].objectType } });
-      console.log(this.values[$event.index])
     }
   },
   setup() {

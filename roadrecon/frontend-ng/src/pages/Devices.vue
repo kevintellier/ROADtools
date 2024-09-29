@@ -9,38 +9,65 @@
         <div class="mb-4 sm:mb-0">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
         </div>
-
-        <!-- Right: Actions -->
-        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-
-          <!-- Filter button -->
-          <FilterButton align="right" />
-          <!-- Datepicker built with flatpickr -->
-          <Datepicker align="right" />
-        </div>
-
       </div>
       <!-- Cards -->
-      <div class="grid grid-cols-12 gap-6">
+      <div class="grid gap-6">
+        <ObjectTable :columns="columns" :values="devices" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import { ref } from 'vue'
-import Sidebar from '../partials/Sidebar.vue'
-import Header from '../partials/Header.vue'
-import Banner from '../partials/Banner.vue'
+import { ref, toRaw } from 'vue'
+import ObjectTable from '../partials/dashboard/ObjectTable.vue'
+import { FilterMatchMode } from '@primevue/core/api';
+import axios from 'axios'
+
+const filters = ref();
 
 export default {
   name: 'Devices',
-  components: {
-  },
   props: {
     name: String
   },
-  setup() {
+  components: {
+    ObjectTable
+  },
+  data(){
+    return {
+      devices: [],
+      columns: [
+        { field: 'displayName', header: 'Name' },
+        { field: 'deviceManufacturer', header: 'Manufacturer' },
+        { field: 'accountEnabled', header: 'Enabled' },
+        { field: 'deviceModel', header: 'Model' },
+        { field: 'deviceOSType', header: 'OS' },
+        { field: 'deviceOSVersion', header: 'OS Version' },
+        { field: 'deviceTrustType', header: 'Trust type' },
+        { field: 'isCompliant', header: 'Compliant' },
+        { field: 'isManaged', header: 'Managed' },
+        { field: 'isRooted', header: 'Rooted' },
+      ],
+      filterFields:["displayName","deviceManufacturer","accountEnabled","deviceModel","deviceOSType","deviceOSVersion","deviceTrustType","isCompliant","isManaged","isRooted"],
+      filters: {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      },
+    }
+  },
+  mounted() {
+    axios
+        .get("/api/devices")
+        .then(response => {
+            const devices = response.data
+
+            console.log("API data:", devices)
+
+            this.devices=response.data;
+        })
+        .catch(error => {
+            console.log(error)
+      })
   }
 }
 </script>
