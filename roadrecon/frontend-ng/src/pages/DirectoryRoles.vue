@@ -9,38 +9,65 @@
         <div class="mb-4 sm:mb-0">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
         </div>
-
-        <!-- Right: Actions -->
-        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-
-          <!-- Filter button -->
-          <FilterButton align="right" />
-          <!-- Datepicker built with flatpickr -->
-          <Datepicker align="right" />
-        </div>
-
       </div>
       <!-- Cards -->
-      <div class="grid grid-cols-12 gap-6">
+      <div class="grid gap-6">
+        <ObjectTable :columns="columns" :values="directoryroles" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import { ref } from 'vue'
-import Sidebar from '../partials/Sidebar.vue'
-import Header from '../partials/Header.vue'
-import Banner from '../partials/Banner.vue'
+import { ref, toRaw } from 'vue'
+import ObjectTable from '../partials/dashboard/ObjectTable.vue'
+import { FilterMatchMode } from '@primevue/core/api';
+import axios from 'axios'
+
+const filters = ref();
 
 export default {
-  name: 'Directory Roles',
-  components: {
-  },
+  name: 'Directoryroles',
   props: {
     name: String
   },
-  setup() {
+  components: {
+    ObjectTable
+  },
+  data(){
+    return {
+      directoryroles: [],
+      assignments: [],
+      columns: [
+        { field: 'principal.displayName', header: 'Principal name' },
+        { field: '', header: 'Scope' },
+        { field: '', header: 'Assignment Type' },
+        { field: 'membershipRule', header: 'Principal Type' },
+        { field: 'membershipRule', header: 'userPrincipalName' },
+        { field: 'membershipRule', header: 'Account type' },
+        { field: 'membershipRule', header: 'Status' },
+      ],
+      filterFields:["displayName","description","membershipRule"],
+      filters: {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      },
+    }
+  },
+  mounted() {
+    axios
+        .get("/api/administrativeunits")
+        .then(response => {
+            const directoryroles = response.data
+
+            console.log("API data:", directoryroles)
+
+            this.directoryroles=response.data;
+            this.assignments = this.directoryroles.filter(data => data)
+            console.log(this.assignments)
+        })
+        .catch(error => {
+            console.log(error)
+      })
   }
 }
 </script>
