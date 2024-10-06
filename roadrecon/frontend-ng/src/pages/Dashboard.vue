@@ -21,7 +21,7 @@
 
       </div>
       <!-- Cards -->
-      <div class="grid grid-cols-12 gap-6">
+      <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12">
           <div class="flex flex-wrap p-2">
             <div v-for="(card, index) in cards" class="w-full md:w-1/2 lg:w-1/3 xl:w-1/6 p-2">
@@ -57,7 +57,7 @@
           </Card>
         </div>
         <div class="col-span-12 xl:col-span-6 p-4 pt-0 !pl-0">
-          <Card>
+          <Card class="h-full">
             <template #title>
               <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
                 Tenant information
@@ -66,11 +66,11 @@
             <template #content>
               <div v-for="(item, index) in overviewItems" class="p-6 gap-4"
                 :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-                <div class="flex flex-row justify-items-stretch gap-6">
+                <div class="flex flex-row justify-items-stretch gap-4">
                   <div class="justify-self-start basis-1/6 gap-2 ">
                     <div class="text-md font-semibold font-medium">{{ item.name }}</div>
                   </div>
-                  <div class="justify-self-start basis-1/2 gap-8">
+                  <div class="justify-self-start basis-1/2 gap-4">
                     <span class="text-md">{{ item.value }}</span>
                   </div>
                 </div>
@@ -107,23 +107,25 @@
               </div>
             </template>
             <template #content>
-              <div class="flex flex-row p-2">
-                <div v-for="(userPermissionCard, index) in userPermissionCards" class="w-full basis-1/4 p-2">
-                <Card :class="[userPermissionCard.value ? 'p-tag-success' : 'p-tag-danger ']">
-                  <template #content>
-                    <div
-                      class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between h-full !rounded-2xl">
-                      <div class="overview-info">
-                        <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
-                          {{ userPermissionCard.title }}
-                        </div>
-                        <div class="m-0 text-surface-500 dark:text-surface-300 text-4xl font-semibold">
-                          {{ userPermissionCard.value ? "Yes" : "No" }}
+              <div class="flex gap-4">
+                <div v-for="(userPermissionCard, index) in userPermissionCards" class="flex w-1/3 m-0! p-2">
+                <Tag class="w-full !p-0">
+                  <Card :class="[userPermissionCard.value ? 'p-tag-success' : 'p-tag-danger ']" class="size-full">
+                    <template #content>
+                      <div
+                        class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between h-full !rounded-2xl">
+                        <div class="overview-info">
+                          <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                            {{ userPermissionCard.title }}
+                          </div>
+                          <div class="m-0 text-surface-500 dark:text-surface-300 text-4xl font-semibold">
+                            {{ userPermissionCard.value ? "Yes" : "No" }}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </template>
-                </Card>
+                    </template>
+                  </Card>
+                </Tag>
                 </div>
               </div>
             </template>
