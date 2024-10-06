@@ -9,38 +9,53 @@
         <div class="mb-4 sm:mb-0">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
         </div>
-
-        <!-- Right: Actions -->
-        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-
-          <!-- Filter button -->
-          <FilterButton align="right" />
-          <!-- Datepicker built with flatpickr -->
-          <Datepicker align="right" />
-        </div>
-
       </div>
       <!-- Cards -->
-      <div class="grid grid-cols-12 gap-6">
+      <div class="grid gap-6">
+        <ObjectTable :columns="columns" :values="approles" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import { ref } from 'vue'
-import Sidebar from '../partials/Sidebar.vue'
-import Header from '../partials/Header.vue'
-import Banner from '../partials/Banner.vue'
+import ObjectTable from '../partials/dashboard/ObjectTable.vue'
+import { FilterMatchMode } from '@primevue/core/api';
+import axios from 'axios'
 
 export default {
   name: 'ApplicationRoles',
-  components: {
-  },
   props: {
     name: String
   },
-  setup() {
+  components: {
+    ObjectTable
+  },
+  data(){
+    return {
+      approles: [],
+      columns: [
+        { field: 'pname', header: 'Principal Name' },
+        { field: 'ptype', header: 'Principal Type' },
+        { field: 'app', header: 'Application' },
+        { field: 'value', header: 'Role' },
+        { field: 'desc', header: 'Description' },
+      ],
+      filterFields:["pname","ptype","app","value","desc"],
+      filters: {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      },
+    }
+  },
+  mounted() {
+    axios
+        .get("/api/approles")
+        .then(response => {
+            this.approles=response.data;
+        })
+        .catch(error => {
+            console.log(error)
+      })
   }
 }
 </script>

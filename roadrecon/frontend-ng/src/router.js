@@ -18,61 +18,71 @@ export const routes = [
     path: '/',
     name: 'Dashboard',
     component: Dashboard,
-    props: {name: 'Dashboard'}
+    props: {name: 'Dashboard'},
+    icon: "pi pi-home"
   },
   {
     path: '/Users',
     name: 'Users',
     component: Users,
-    props: {name: 'Users'}
+    props: {name: 'Users'},
+    icon: "pi pi-user"
   },
   {
     path: '/Groups',
     name: 'Groups',
     component: Groups,
-    props: {name: 'Groups'}
+    props: {name: 'Groups'},
+    icon: "pi pi-users"
   },
   {
     path: '/Devices',
     name: 'Devices',
     component: Devices,
-    props: {name: 'Devices'}
+    props: {name: 'Devices'},
+    icon: "pi pi-desktop"
   },
   {
     path: '/AdministrativeUnits',
     name: 'Administrative Units',
     component: AdministrativeUnits,
-    props: {name: 'Administrative Units'}
+    props: {name: 'Administrative Units'},
+    icon: "pi pi-stop"
   },
   {
     path: '/DirectoryRoles',
     name: 'Directory Roles',
     component: DirectoryRoles,
-    props: {name: 'Directory Roles'}
+    props: {name: 'Directory Roles'},
+    icon: "pi pi-stop"
   },
   {
     path: '/Applications',
     name: 'Applications',
     component: Applications,
-    props: {name: 'Applications'}
+    props: {name: 'Applications'},
+    icon: "pi pi-box"
   },
   {
     path: '/ServicePrincipals',
     name: 'Service Principals',
     component: ServicePrincipals,
-    props: {name: 'ServicePrincipals'}
+    props: {name: 'ServicePrincipals'},
+    icon: "pi pi-crown"
   },
   {
     path: '/ApplicationRoles',
     name: 'Application Roles',
     component: ApplicationRoles,
-    props: {name: 'Application Roles'}
+    props: {name: 'Application Roles'},
+    icon: "pi pi-stop"
   },
   {
     path: '/OAuth2Permissions',
     name: 'Oauth2 Permissions',
     component: OAuth2Permissions,
-    props: {name: 'OAuth2 Permissions'}
+    props: {name: 'OAuth2 Permissions'},
+    icon: "pi pi-stop"
   },
   {
     path: '/:objectType/:objectId',

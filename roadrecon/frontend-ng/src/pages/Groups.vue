@@ -41,14 +41,14 @@ export default {
       columns: [
         { field: 'displayName', header: 'Name' },
         { field: 'description', header: 'Description' },
-        { field: 'dirSyncEnabled', header: 'Group type' },
-        { field: 'groupTypes', header: 'Group source' },
+        { field: 'groupType', header: 'Group type' },
+        { field: 'source', header: 'Group source' },
         { field: 'mail', header: 'Mail' },
-        { field: 'isPublic', header: 'Public?' },
-        { field: 'isAssignableToRole', header: 'Role assignable?' },
+        { field: 'public', header: 'Public?' },
+        { field: 'roleAssignable', header: 'Role assignable?' },
         { field: 'membershipRule', header: 'Dynamic membership' }
       ],
-      filterFields:["displayName","description","dirSyncEnabled","groupTypes","mail","isPublic","isAssignableToRole","membershipRule"],
+      filterFields:["displayName","description","groupType","source","mail","public","roleAssignable","membershipRule"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
@@ -58,11 +58,14 @@ export default {
     axios
         .get("/api/groups")
         .then(response => {
-            const groups = response.data
-
-            console.log("API data:", users)
-
             this.groups=response.data;
+            for(var i=0;i<this.groups.length;i++){
+              this.groups[i].source = this.groups[i].dirSyncEnabled ? "Synced with AD" : "Cloud-only"
+              this.groups[i].groupType = this.groups[i].groupTypes.includes("Unified") ? "Microsoft 365" : "Security"
+              this.groups[i].public = this.groups[i].isPublic ? "True" : ""
+              this.groups[i].roleAssignable = this.groups[i].isAssignableToRole ? "True" : ""
+            }
+            console.log(this.groups)
         })
         .catch(error => {
             console.log(error)

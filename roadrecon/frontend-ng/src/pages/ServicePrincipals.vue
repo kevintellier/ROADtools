@@ -9,19 +9,10 @@
         <div class="mb-4 sm:mb-0">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
         </div>
-
-        <!-- Right: Actions -->
-        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-
-          <!-- Filter button -->
-          <FilterButton align="right" />
-          <!-- Datepicker built with flatpickr -->
-          <Datepicker align="right" />
-        </div>
-
       </div>
       <!-- Cards -->
-      <div class="grid grid-cols-12 gap-6">
+      <div class="grid gap-6">
+        <ObjectTable :columns="columns" :values="serviceprincipals" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
   </main>
@@ -29,15 +20,60 @@
 
 <script>
 import { ref } from 'vue'
+import ObjectTable from '../partials/dashboard/ObjectTable.vue'
+import { FilterMatchMode } from '@primevue/core/api';
+import axios from 'axios'
+
+const filters = ref();
 
 export default {
-  name: 'Service Principals',
-  components: {
-  },
+  name: 'ServicePrincipals',
   props: {
     name: String
   },
-  setup() {
+  components: {
+    ObjectTable
+  },
+  data(){
+    return {
+      serviceprincipals: [],
+      columns: [
+        { field: 'accountEnabled', header: 'Enabled' },
+        { field: 'appDisplayName', header: 'Name' },
+        { field: 'servicePrincipalType', header: 'Type' },
+        { field: 'publisherName', header: 'Publisher' },
+        { field: 'microsoftFirstParty', header: 'Microsoft app' },
+        { field: 'passwordCredentials', header: 'Passwords' },
+        { field: 'keyCredentials', header: 'Keys' },
+        { field: 'appRoles', header: 'Roles defined' },
+        { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
+        { field: 'ownerUsers', header: 'Custom owner' },
+      ],
+      filterFields:["accountEnabled","appDisplayName","servicePrincipalType","publisherName","microsoftFirstParty","passwordCredentials","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
+      filters: {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      },
+    }
+  },
+  mounted() {
+    axios
+        .get("/api/serviceprincipals")
+        .then(response => {
+            this.serviceprincipals=response.data;
+            for(var i=0;i<this.serviceprincipals.length;i++){
+              this.serviceprincipals[i].accountEnabled = this.serviceprincipals[i].accountEnabled ? "Enabled" : "Disabled"
+              this.serviceprincipals[i].microsoftFirstParty = this.serviceprincipals[i].microsoftFirstParty ? "True" : "False"
+              this.serviceprincipals[i].passwordCredentials = this.serviceprincipals[i].passwordCredentials.length > 0 ? "True" : ""
+              this.serviceprincipals[i].keyCredentials = this.serviceprincipals[i].keyCredentials.length > 0 ? "True" : ""
+              this.serviceprincipals[i].appRoles = this.serviceprincipals[i].appRoles.length > 0 ? this.serviceprincipals[i].appRoles.length : ""
+              this.serviceprincipals[i].oauth2Permissions = this.serviceprincipals[i].oauth2Permissions.length > 0 ? this.serviceprincipals[i].oauth2Permissions.length : ""
+              this.serviceprincipals[i].ownerUsers = this.serviceprincipals[i].ownerUsers.length > 0 ? "True" : ""
+            }
+            console.log(this.serviceprincipals)
+        })
+        .catch(error => {
+            console.log(error)
+      })
   }
 }
 </script>

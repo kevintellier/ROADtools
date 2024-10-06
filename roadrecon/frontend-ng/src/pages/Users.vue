@@ -11,7 +11,7 @@
         </div>
       </div>
       <!-- Cards -->
-      <div class="grid gap-6">
+      <div class="grid gap-6 overflow-auto">
         <ObjectTable :columns="columns" :values="users" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
@@ -60,17 +60,14 @@ export default {
     axios
         .get("/api/users")
         .then(response => {
-            const users = response.data
-
-            console.log("API data:", users)
-
             this.users=response.data;
+            for(var i=0;i<this.users.length;i++){
+              this.users[i].accountEnabled = this.users[i].accountEnabled ? "True" : "False"
+            }
         })
         .catch(error => {
             console.log(error)
       })
   }
 }
-
-const users = ref();
 </script>

@@ -9,35 +9,54 @@
         <div class="mb-4 sm:mb-0">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
         </div>
-
-        <!-- Right: Actions -->
-        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-
-          <!-- Filter button -->
-          <FilterButton align="right" />
-          <!-- Datepicker built with flatpickr -->
-          <Datepicker align="right" />
-        </div>
-
       </div>
       <!-- Cards -->
-      <div class="grid grid-cols-12 gap-6">
+      <div class="grid gap-6">
+        <ObjectTable :columns="columns" :values="oauth2permissions" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import { ref } from 'vue'
+import ObjectTable from '../partials/dashboard/ObjectTable.vue'
+import { FilterMatchMode } from '@primevue/core/api';
+import axios from 'axios'
 
 export default {
-  name: 'OAuth2 Permissions',
-  components: {
-  },
+  name: 'OAuth2Permissions',
   props: {
     name: String
   },
-  setup() {
+  components: {
+    ObjectTable
+  },
+  data(){
+    return {
+      oauth2permissions: [],
+      columns: [
+        { field: 'type', header: 'Approval type' },
+        { field: 'userdisplayname', header: 'Principal Name' },
+        { field: 'sourceapplication', header: 'Source Application (permissions recipient)' },
+        { field: 'targetapplication', header: 'Target Application (permission to access)' },
+        { field: 'scope', header: 'Scope (permissions)' },
+        { field: 'expiry', header: 'Expiry' },
+      ],
+      filterFields:["accountEnabled","appDisplayName","servicePrincipalType","publisherName","microsoftFirstParty","passwordCredentials","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
+      filters: {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      },
+    }
+  },
+  mounted() {
+    axios
+        .get("/api/oauth2permissions")
+        .then(response => {
+            this.oauth2permissions=response.data;
+        })
+        .catch(error => {
+            console.log(error)
+      })
   }
 }
 </script>

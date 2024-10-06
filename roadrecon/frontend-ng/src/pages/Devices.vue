@@ -19,12 +19,9 @@
 </template>
 
 <script>
-import { ref, toRaw } from 'vue'
 import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import { FilterMatchMode } from '@primevue/core/api';
 import axios from 'axios'
-
-const filters = ref();
 
 export default {
   name: 'Devices',
@@ -59,10 +56,6 @@ export default {
     axios
         .get("/api/devices")
         .then(response => {
-            const devices = response.data
-
-            console.log("API data:", devices)
-
             this.devices=response.data;
         })
         .catch(error => {

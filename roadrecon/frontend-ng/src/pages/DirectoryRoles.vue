@@ -12,7 +12,20 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6">
-        <ObjectTable :columns="columns" :values="directoryroles" :filterFields="filterFields" :filters="filters" />
+        <Accordion :value="['0']" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
+          <template v-for="(directoryRole, index) in directoryroles">
+            <AccordionPanel :value="index" v-if="directoryRole.assignments.length > 0">
+                <AccordionHeader>
+                  <span class="flex items-center gap-2 w-full">
+                    <span>{{ directoryRole.displayName }} ({{ directoryRole.assignments.length }})</span>
+                  </span>
+                </AccordionHeader>
+                <AccordionContent>
+                  <ObjectTable :columns="columns" :values="directoryRole.assignments" :filterFields="filterFields" :filters="filters" />
+                </AccordionContent>
+            </AccordionPanel>
+          </template>
+        </Accordion>
       </div>
     </div>
   </main>
@@ -22,32 +35,40 @@
 import { ref, toRaw } from 'vue'
 import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import { FilterMatchMode } from '@primevue/core/api';
+import Accordion from 'primevue/accordion';
+import AccordionPanel from 'primevue/accordionpanel';
+import AccordionHeader from 'primevue/accordionheader';
+import AccordionContent from 'primevue/accordioncontent';
 import axios from 'axios'
 
 const filters = ref();
 
 export default {
-  name: 'Directoryroles',
+  name: 'DirectoryRoles',
   props: {
-    name: String
+    name: String,
   },
   components: {
-    ObjectTable
+    ObjectTable,
+    Accordion,
+    AccordionPanel,
+    AccordionHeader,
+    AccordionContent
   },
   data(){
     return {
       directoryroles: [],
       assignments: [],
       columns: [
-        { field: 'principal.displayName', header: 'Principal name' },
-        { field: '', header: 'Scope' },
-        { field: '', header: 'Assignment Type' },
-        { field: 'membershipRule', header: 'Principal Type' },
-        { field: 'membershipRule', header: 'userPrincipalName' },
-        { field: 'membershipRule', header: 'Account type' },
-        { field: 'membershipRule', header: 'Status' },
+        { field: 'principal.displayName', header: 'Principal Name' },
+        { field: 'scopeNames', header: 'Scope' },
+        { field: 'type', header: 'Assignment Type' },
+        { field: 'principal.objectType', header: 'Principal Type' },
+        { field: 'principal.userPrincipalName', header: 'userPrincipalName' },
+        { field: 'principal.dirSyncEnabled', header: 'Account type' },
+        { field: 'principal.accountEnabled', header: 'Status' },
       ],
-      filterFields:["displayName","description","membershipRule"],
+      filterFields:["principal.displayName","scopeNames","type","principal.objectType","principal.userPrincipalName","principal.dirSyncEnabled","principal.accountEnabled"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
@@ -55,15 +76,16 @@ export default {
   },
   mounted() {
     axios
-        .get("/api/administrativeunits")
+        .get("/api/roledefinitions")
         .then(response => {
-            const directoryroles = response.data
-
-            console.log("API data:", directoryroles)
-
             this.directoryroles=response.data;
-            this.assignments = this.directoryroles.filter(data => data)
-            console.log(this.assignments)
+            for(var i=0;i<this.directoryroles.length;i++){
+              for(var j=0;j<this.directoryroles[i].assignments.length;j++){
+                  this.directoryroles[i].assignments[j].scopeNames = this.directoryroles[i].assignments[j].scopeNames[0]
+                  this.directoryroles[i].assignments[j].type = this.directoryroles[i].assignments[j].type == "assignment" ? "Active" : ""
+                }
+            }
+            console.log(this.directoryroles)
         })
         .catch(error => {
             console.log(error)

@@ -19,9 +19,10 @@
           </template>
           <template #empty> No data found. </template>
           <template #loading> Loading data. Please wait. </template>
-          <Column sortable v-for="col of columns" :sortField="col.field" :key="col.field" :field="col.field"
-            :header="col.header" style="width: 10%">
-          </Column>
+          <template v-for="col of columns" :key="col.field">
+            <Column sortable :sortField="col.field" :field="col.field" :header="col.header" style="width: 10%">
+            </Column>
+          </template>
         </DataTable>
       </div>
     </div>
