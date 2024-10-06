@@ -12,7 +12,7 @@
                 </div>
             </div>
             <!-- Cards -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 overflow-auto rounded-3xl p-3">
                 <Card class="grid grid-cols-2">
                     <template #content>
                         <DataView :value="object">
@@ -30,13 +30,13 @@
                                         <TabPanel value="0">
                                             <div class="flex flex-col">
                                                 <div>
-                                                    <div v-for="(item,index) in object.overviewItems" class="p-6 gap-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-                                                        <div class="grid grid-cols-3 justify-items-stretch gap-6">
+                                                    <div v-for="(item,index) in object.overviewItems" class="p-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+                                                        <div class="grid grid-cols-4 justify-items-stretch">
                                                             <div class="justify-self-start gap-2 ">
-                                                                <div class="text-xl font-semibold font-medium mt-2">{{ item.name }}</div>
+                                                                <div class="text-lg font-semibold font-medium mt-2">{{ item.name }}</div>
                                                             </div>
                                                             <div class="justify-self-start gap-8 col-span-2">
-                                                                <span class="text-xl">{{ item.value }}</span>
+                                                                <span class="text-lg">{{ item.value }}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -284,7 +284,7 @@ export default {
                             name: "Owners",
                             attribute: "owner",
                             value: "0",
-                            filterFields: ["owner"],
+                            filterFields: ["name","userPrincipalName","accountEnabled"],
                             columns: [
                                 { field: 'name', header: 'Owner' },
                                 { field: 'userPrincipalName', header: 'userPrincipalName' },

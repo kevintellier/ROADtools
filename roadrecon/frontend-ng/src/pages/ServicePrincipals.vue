@@ -11,7 +11,7 @@
         </div>
       </div>
       <!-- Cards -->
-      <div class="grid gap-6">
+      <div class="grid gap-6 overflow-auto rounded-3xl">
         <ObjectTable :columns="columns" :values="serviceprincipals" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>

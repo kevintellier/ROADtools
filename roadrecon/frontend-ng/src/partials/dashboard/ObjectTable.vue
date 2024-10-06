@@ -3,12 +3,13 @@
     <header v-if="title" class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
       <h2 class="font-semibold text-gray-800 dark:text-gray-100">{{ title }}</h2>
     </header>
-    <div class="p-3">
+    <div>
 
       <!-- Table -->
       <div class="overflow-x-auto">
-        <DataTable v-model:filters="filters" :value="values" selectionMode="single" tableStyle="min-width: 50rem" paginator :rows="50"
-          :rowsPerPageOptions="[50, 100, 200, 1000]" :globalFilterFields="['displayName']" @row-click="goToDetail">
+        <DataTable v-model:filters="filters" :value="values" selectionMode="single" tableStyle="min-width: 50rem"
+          paginator :rows="50" :rowsPerPageOptions="[50, 100, 200, 1000]" :globalFilterFields="['displayName']"
+          @row-click="goToDetail">
           <template #header>
             <IconField>
               <InputIcon>
@@ -58,15 +59,16 @@ export default {
     Column,
     DataTable
   },
-  methods:{
+  methods: {
     goToDetail($event) {
+      console.log(this.values[$event.index])
       this.$router.push({ name: 'RowDetail', params: { objectId: this.values[$event.index].objectId, objectType: this.values[$event.index].objectType } });
     }
   },
   setup() {
     const filters = ref({
-      global: { 
-        value: null, 
+      global: {
+        value: null,
         matchMode: FilterMatchMode.CONTAINS
       },
     });

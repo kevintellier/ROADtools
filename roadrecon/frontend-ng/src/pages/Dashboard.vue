@@ -213,7 +213,7 @@ export default {
         { field: 'capabilities', header: 'Capabilities' },
         { field: 'default', header: 'Properties' },
       ],
-      filterFields: ["displayName"],
+      filterFields: ["name","type","capabilities","default"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },

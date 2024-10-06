@@ -11,7 +11,7 @@
         </div>
       </div>
       <!-- Cards -->
-      <div class="grid gap-6">
+      <div class="grid gap-6 rounded-3xl overflow-auto">
         <Accordion :value="['0']" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
           <template v-for="(directoryRole, index) in directoryroles">
             <AccordionPanel :value="index" v-if="directoryRole.assignments.length > 0">

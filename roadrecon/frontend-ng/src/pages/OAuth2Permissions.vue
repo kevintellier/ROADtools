@@ -11,7 +11,7 @@
         </div>
       </div>
       <!-- Cards -->
-      <div class="grid gap-6">
+      <div class="grid gap-6 overflow-auto rounded-3xl">
         <ObjectTable :columns="columns" :values="oauth2permissions" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
@@ -42,7 +42,7 @@ export default {
         { field: 'scope', header: 'Scope (permissions)' },
         { field: 'expiry', header: 'Expiry' },
       ],
-      filterFields:["accountEnabled","appDisplayName","servicePrincipalType","publisherName","microsoftFirstParty","passwordCredentials","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
+      filterFields:["type","userdisplayname","sourceapplication","targetapplication","scope","expiry","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },

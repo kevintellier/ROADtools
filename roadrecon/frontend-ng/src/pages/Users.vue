@@ -11,7 +11,7 @@
         </div>
       </div>
       <!-- Cards -->
-      <div class="grid gap-6 overflow-auto">
+      <div class="grid gap-6 overflow-auto rounded-3xl">
         <ObjectTable :columns="columns" :values="users" :filterFields="filterFields" :filters="filters" />
       </div>
     </div>
@@ -50,7 +50,7 @@ export default {
         { field: 'objectType', header: 'Account type' },
         { field: 'member', header: 'User type' },
       ],
-      filterFields:["displayName"],
+      filterFields:["displayName","accountEnabled","mail","department","lastPasswordChangeDateTime","jobTitle","mobile","objectType","member"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
