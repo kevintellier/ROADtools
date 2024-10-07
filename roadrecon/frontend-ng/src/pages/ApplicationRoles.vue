@@ -36,12 +36,12 @@ export default {
       approles: [],
       columns: [
         { field: 'pname', header: 'Principal Name' },
-        { field: 'ptype', header: 'Principal Type' },
+        { field: 'objectType', header: 'Principal Type' },
         { field: 'app', header: 'Application' },
         { field: 'value', header: 'Role' },
         { field: 'desc', header: 'Description' },
       ],
-      filterFields:["pname","ptype","app","value","desc"],
+      filterFields:["pname","objectType","app","value","desc"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },

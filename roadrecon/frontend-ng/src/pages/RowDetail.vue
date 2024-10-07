@@ -7,13 +7,13 @@
                 <!-- Left: Title -->
                 <div class="mb-4 sm:mb-0">
                     <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ object.displayName }}</h1>
-                    <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device') && object.accountEnabled === true" severity="success" value="Enabled"/>
-                    <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device') && object.accountEnabled === false" severity="danger" value="Disabled"/>
+                    <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device'|| object.objectType == 'ServicePrincipal') && object.accountEnabled === true" severity="success" value="Enabled"/>
+                    <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device'|| object.objectType == 'ServicePrincipal') && object.accountEnabled === false" severity="danger" value="Disabled"/>
                 </div>
             </div>
             <!-- Cards -->
             <div class="grid grid-cols-2 gap-4 overflow-auto rounded-3xl p-3">
-                <Card class="grid grid-cols-2">
+                <Card class="grid grid-cols-2 overflow-auto">
                     <template #content>
                         <DataView :value="object">
                             <template #list="slotProps">
@@ -35,9 +35,18 @@
                                                             <div class="justify-self-start gap-2 ">
                                                                 <div class="text-lg font-semibold font-medium mt-2">{{ item.name }}</div>
                                                             </div>
-                                                            <div class="justify-self-start gap-8 col-span-2">
-                                                                <span class="text-lg">{{ item.value }}</span>
-                                                            </div>
+                                                            <template v-if="Array.isArray(item.value)">
+                                                                <div class="justify-self-start gap-8 col-span-2">
+                                                                    <span v-for="value in item.value" class="text-lg">
+                                                                        {{ value }}<br>
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                            <template v-else>
+                                                                <div class="justify-self-start gap-8 col-span-2">
+                                                                    <span class="text-lg">{{ item.value }}</span>
+                                                                </div>
+                                                            </template>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -138,6 +147,9 @@ export default {
         }
         else if(objectType === "Application"){
             apiRoute = "applications"
+        }
+        else if(objectType === "ServicePrincipal"){
+            apiRoute = "serviceprincipals"
         }
 
         axios
@@ -342,6 +354,60 @@ export default {
                         { 
                             name: "Service Principal",
                             value: this.object.ownerServicePrincipals[0],
+                        },
+                    ];
+                }
+                else if (objectType === "ServicePrincipal") {
+                    this.object.tabItems = [
+                        { 
+                            name: "App defined permissions (app permissions)",
+                            attribute: "appRoles",
+                            value: "0",
+                            filterFields: ["value","displayName","description","id","allowedMemberTypes"],
+                            columns: [
+                                { field: 'value', header: 'Value' },
+                                { field: 'displayName', header: 'Name' },
+                                { field: 'description', header: 'Description' },
+                                { field: 'id', header: 'ID' },
+                                { field: 'allowedMemberTypes', header: 'Allowed types' },
+                            ],
+                        },
+                        { 
+                            name: "OAuth2 permissions (delegated permissions)",
+                            attribute: "oauth2Permissions",
+                            value: "1",
+                            filterFields: ["value","displayName","description","id","allowedMemberTypes"],
+                            columns: [
+                                { field: 'value', header: 'Value' },
+                                { field: 'userConsentDisplayName', header: 'User Consent Name' },
+                                { field: 'userConsentDescription', header: 'User Consent Description' },
+                                { field: 'adminConsentDisplayName', header: 'Admin Consent Name' },
+                                { field: 'adminConsentDescription', header: 'Admin Consent Description' },
+                                { field: 'id', header: 'Admin Consent Description' },
+                                { field: 'type', header: 'Allowed types' },
+                            ],
+                        },
+                    ];
+                    this.object.overviewItems = [
+                        { 
+                            name: "Display name",
+                            value: this.object.displayName,
+                        },
+                        { 
+                            name: "ObjectId",
+                            value: this.object.objectId,
+                        },
+                        { 
+                            name: "Application ID",
+                            value: this.object.appId,
+                        },
+                        { 
+                            name: "Publisher",
+                            value: this.object.publisherName,
+                        },
+                        { 
+                            name: "ReplyUrls",
+                            value: this.object.replyUrls,
                         },
                     ];
                 }

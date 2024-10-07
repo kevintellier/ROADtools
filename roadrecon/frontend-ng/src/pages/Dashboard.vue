@@ -80,7 +80,7 @@
         </div>
         <div class="col-span-12 xl:col-span-6 p-4 pt-0 !pl-0">
           <div class="flex flex-wrap p-2">
-            <div v-for="(card, index) in smallCards" class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-2">
+            <div v-for="(card, index) in smallCards" class="w-full basis-1/3 p-2">
               <Card :class="[card.value ? 'p-tag-success' : 'p-tag-danger ']">
                 <template #content>
                   <div

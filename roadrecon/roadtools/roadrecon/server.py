@@ -419,8 +419,8 @@ def process_approle(approles, ar):
     if ar.principalType == 'Group':
         sp = db.session.get(Group, ar.principalId)
     if ar.id == '00000000-0000-0000-0000-000000000000':
-        approles.append({'objid':sp.objectId,
-                         'ptype':ar.principalType,
+        approles.append({'objectId':sp.objectId,
+                         'objectType':ar.principalType,
                          'pname':sp.displayName,
                          'app':ar.resourceDisplayName,
                          'value':'Default',
@@ -430,8 +430,8 @@ def process_approle(approles, ar):
     else:
         for approle in rsp.appRoles:
             if approle['id'] == ar.id:
-                approles.append({'objid':sp.objectId,
-                                 'ptype':ar.principalType,
+                approles.append({'objectId':sp.objectId,
+                                 'objectType':ar.principalType,
                                  'pname':sp.displayName,
                                  'app':ar.resourceDisplayName,
                                  'value':approle['value'],
