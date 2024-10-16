@@ -8,4 +8,6 @@ services:
   backend:
     build:
       context: .
+    volumes:
+      - ./roadrecon.db:/app/roadrecon.db
     network_mode: "host"
