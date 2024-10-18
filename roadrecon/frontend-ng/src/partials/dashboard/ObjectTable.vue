@@ -8,7 +8,7 @@
       <!-- Table -->
       <div class="overflow-x-auto">
         <DataTable v-model:filters="filters" :value="values" selectionMode="single" tableStyle="min-width: 50rem"
-          paginator :rows="50" :rowsPerPageOptions="[50, 100, 200, 1000]" :globalFilterFields="['displayName']"
+          paginator :rows="50" :rowsPerPageOptions="[50, 100, 200, 1000]" :globalFilterFields="filterFields"
           @row-click="goToDetail">
           <template #header>
             <IconField>
@@ -49,6 +49,10 @@ export default {
     values: {
       type: Array,
       required: true, // Array of objects to display
+    },
+    filterFields: {
+      type: Array,
+      required: false
     }
   },
   components: {

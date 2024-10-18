@@ -231,6 +231,8 @@ export default {
       .then(response => {
         this.tenantDomains = response.data.verifiedDomains
 
+        console.log(response.data.verifiedDomains)
+
         const tenantInformation = [
           {
             name: "Name", value: response.data.displayName
