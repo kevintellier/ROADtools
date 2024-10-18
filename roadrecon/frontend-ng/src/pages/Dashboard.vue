@@ -21,10 +21,10 @@
 
       </div>
       <!-- Cards -->
-      <div class="grid grid-cols-12">
+      <div class="grid grid-cols-12 p-4 gap-4">
         <div class="col-span-12">
-          <div class="flex flex-wrap p-2">
-            <div v-for="(card, index) in cards" class="w-full md:w-1/2 lg:w-1/3 xl:w-1/6 p-2">
+          <div class="flex gap-4">
+            <div v-for="(card, index) in cards" class="w-full md:w-1/2 lg:w-1/3 xl:w-1/6">
               <Card :index @click="goToDetail(index)">
                 <template #content>
                   <div
@@ -44,7 +44,7 @@
             </div>
           </div>
         </div>
-        <div class="col-span-12 xl:col-span-7 p-4 pt-0">
+        <div class="col-span-12 xl:col-span-7 pt-0">
           <Card>
             <template #title>
               <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
@@ -56,7 +56,7 @@
             </template>
           </Card>
         </div>
-        <div class="col-span-12 xl:col-span-5 p-4 pt-0 !pl-0">
+        <div class="col-span-12 xl:col-span-5 pt-0 !pl-0">
           <Card class="h-full">
             <template #title>
               <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
@@ -78,7 +78,7 @@
             </template>
           </Card>
         </div>
-        <div class="col-span-12 xl:col-span-7 p-4 pt-0">
+        <div class="col-span-12 xl:col-span-7 pt-0">
           <Card>
             <template #title>
               <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
