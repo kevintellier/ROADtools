@@ -31,19 +31,19 @@
                                             <div class="flex flex-col">
                                                 <div>
                                                     <div v-for="(item,index) in object.overviewItems" class="p-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-                                                        <div class="grid grid-cols-4 justify-items-stretch">
-                                                            <div class="justify-self-start gap-2 ">
-                                                                <div class="text-lg font-semibold font-medium mt-2">{{ item.name }}</div>
+                                                        <div class="grid grid-rows-2 justify-items-stretch">
+                                                            <div class="justify-self-start gap-2 row-span-2">
+                                                                <div class="text-xl font-black font-medium mt-2">{{ item.name }}</div>
                                                             </div>
                                                             <template v-if="Array.isArray(item.value)">
-                                                                <div class="justify-self-start gap-8 col-span-2">
+                                                                <div class="justify-self-start">
                                                                     <span v-for="value in item.value" class="text-lg">
                                                                         {{ value }}<br>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else>
-                                                                <div class="justify-self-start gap-8 col-span-2">
+                                                                <div class="justify-self-start">
                                                                     <span class="text-lg">{{ item.value }}</span>
                                                                 </div>
                                                             </template>
@@ -67,20 +67,25 @@
                         </DataView>
                     </template>
                 </Card>
-                <Card v-if="object.tabItems.length > 0">
+                <!-- TODO Add check here -->
+                <Card>
                     <template #content>
                         <Tabs value="0" class="rounded">
                             <TabList>
-                                <Tab v-for="item in object.tabItems" :key="item.name" :value="item.value">
-                                    {{ item.name }}
-                                    <Tag v-if="item && item.attribute" severity="info" :value="object[item.attribute].length"></Tag>
-                                </Tab>
+                                <template v-for="item in object.tabItems" :key="item.name">
+                                    <Tab :value="item.value" v-if="object[item.attribute].length">
+                                        {{ item.name }}
+                                        <Tag v-if="item && item.attribute" severity="info" :value="object[item.attribute].length"></Tag>
+                                    </Tab>
+                                </template>
                             </TabList>
                             <TabPanels>
-                                <TabPanel v-for="item in object.tabItems" :key="item.attribute" :value="item.value">
-                                    <ObjectTable :columns="item.columns" :values="object[item.attribute]" :filterFields="item.filterFields"
-                                        :filters="filters" />
-                                </TabPanel>
+                                <template v-for="item in object.tabItems" :key="item.attribute">
+                                    <TabPanel :value="item.value" v-if="object[item.attribute].length" >
+                                        <ObjectTable :columns="item.columns" :values="object[item.attribute]" :filterFields="item.filterFields"
+                                                :filters="filters" />
+                                    </TabPanel>
+                                </template>
                             </TabPanels>
                         </Tabs>
                     </template>
