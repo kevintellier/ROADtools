@@ -12,12 +12,14 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6 rounded-3xl overflow-auto">
-        <Accordion :value="['0']" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
+        <!--Don't know why its 11 -->
+        <Accordion :value="['0','11']" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
           <template v-for="(directoryRole, index) in directoryroles">
-            <AccordionPanel :value="index" v-if="directoryRole.assignments.length > 0">
+            <AccordionPanel :value="String(index)" v-if="directoryRole.assignments.length > 0">
                 <AccordionHeader>
                   <span class="flex items-center gap-2 w-full">
-                    <span>{{ directoryRole.displayName }} ({{ directoryRole.assignments.length }})</span>
+                    <span>{{ directoryRole.displayName }}</span>
+                    <Tag severity="info" :value="directoryRole.assignments.length"></Tag>
                   </span>
                 </AccordionHeader>
                 <AccordionContent>
@@ -39,6 +41,7 @@ import Accordion from 'primevue/accordion';
 import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
+import Tag from 'primevue/tag';
 import axios from 'axios'
 
 const filters = ref();
@@ -53,7 +56,8 @@ export default {
     Accordion,
     AccordionPanel,
     AccordionHeader,
-    AccordionContent
+    AccordionContent,
+    Tag
   },
   data(){
     return {
