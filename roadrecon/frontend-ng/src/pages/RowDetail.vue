@@ -6,9 +6,12 @@
             <div class="sm:flex sm:justify-between sm:items-center mb-8">
                 <!-- Left: Title -->
                 <div class="mb-4 sm:mb-0">
-                    <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ object.displayName }}</h1>
-                    <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device'|| object.objectType == 'ServicePrincipal') && object.accountEnabled === true" severity="success" value="Enabled"/>
-                    <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device'|| object.objectType == 'ServicePrincipal') && object.accountEnabled === false" severity="danger" value="Disabled"/>
+                    <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ object.displayName }}
+                    </h1>
+                    <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device' || object.objectType == 'ServicePrincipal') && object.accountEnabled === true"
+                        severity="success" value="Enabled" />
+                    <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device' || object.objectType == 'ServicePrincipal') && object.accountEnabled === false"
+                        severity="danger" value="Disabled" />
                 </div>
             </div>
             <!-- Cards -->
@@ -30,10 +33,12 @@
                                         <TabPanel value="0">
                                             <div class="flex flex-col">
                                                 <div>
-                                                    <div v-for="(item,index) in object.overviewItems" class="p-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+                                                    <div v-for="(item, index) in object.overviewItems" class="p-4"
+                                                        :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
                                                         <div class="grid grid-rows-2 justify-items-stretch">
                                                             <div class="justify-self-start gap-2 row-span-2">
-                                                                <div class="text-xl font-black font-medium mt-2">{{ item.name }}</div>
+                                                                <div class="text-xl font-black font-medium mt-2">{{
+                                                                    item.name }}</div>
                                                             </div>
                                                             <template v-if="Array.isArray(item.value)">
                                                                 <div class="justify-self-start">
@@ -55,10 +60,10 @@
                                         <TabPanel value="1">
                                             <div class="overflow-x-auto">
                                                 <pre id="code" class="text-gray-300">
-                                                    <code>
-                                                        {{ rawObject }}
-                                                    </code>
-                                                </pre>
+            <code>
+                {{ rawObject }}
+            </code>
+        </pre>
                                             </div>
                                         </TabPanel>
                                     </TabPanels>
@@ -72,18 +77,19 @@
                     <template #content>
                         <Tabs value="0" class="rounded">
                             <TabList>
-                                <template v-for="(item,tabIndex) in activeTabItems" :key="item.name">
+                                <template v-for="(item, tabIndex) in activeTabItems" :key="item.name">
                                     <Tab :value="String(tabIndex)" v-if="object[item.attribute].length">
                                         {{ item.name }}
-                                        <Tag v-if="item && item.attribute" severity="info" :value="object[item.attribute].length"></Tag>
+                                        <Tag v-if="item && item.attribute" severity="info"
+                                            :value="object[item.attribute].length"></Tag>
                                     </Tab>
                                 </template>
                             </TabList>
                             <TabPanels>
-                                <template v-for="(item,tabIndex) in activeTabItems" :key="item.attribute">
-                                    <TabPanel :value="String(tabIndex)" v-if="object[item.attribute].length" >
-                                        <ObjectTable :columns="item.columns" :values="object[item.attribute]" :filterFields="item.filterFields"
-                                                :filters="filters" />
+                                <template v-for="(item, tabIndex) in activeTabItems" :key="item.attribute">
+                                    <TabPanel :value="String(tabIndex)" v-if="object[item.attribute].length">
+                                        <ObjectTable :columns="item.columns" :values="object[item.attribute]"
+                                            :filterFields="item.filterFields" :filters="filters" />
                                     </TabPanel>
                                 </template>
                             </TabPanels>
@@ -133,7 +139,43 @@ export default {
             },
             activeTabItems: [],
             name: "User detail",
-            rawObject: null
+            rawObject: null,
+            columns: {
+                devices: [
+                    { field: 'displayName', header: 'Name' },
+                    { field: 'accountEnabled', header: 'Enabled' },
+                    { field: 'deviceManufacturer', header: 'Manufacturer' },
+                    { field: 'deviceModel', header: 'Model' },
+                    { field: 'deviceOSType', header: 'OS' },
+                    { field: 'deviceOSVersion', header: 'OS Version' },
+                    { field: 'deviceTrustType', header: 'Trust type' },
+                    { field: 'isCompliant', header: 'Compliant' },
+                    { field: 'isManaged', header: 'Managed' },
+                    { field: 'isRooted', header: 'Rooted' },
+                ],
+                servicePrincipals: [
+                    { field: 'displayName', header: 'Name' },
+                    { field: 'publisherName', header: 'Publisher' },
+                    { field: 'microsoftFirstParty', header: 'Microsoft app' },
+                    { field: 'passwordCredentials.length', header: 'Passwords' },
+                    { field: 'keyCredentials.length', header: 'Keys' },
+                    { field: 'appRoles.length', header: 'Roles defined' },
+                    { field: 'oauth2Permissions.length', header: 'OAuth2 Permissions' },
+                    { field: 'ownerUsers.length', header: 'Custom owner' },
+                ],
+                applications: [
+                    { field: 'displayName', header: 'Name' },
+                    { field: 'passwordCredentials.length', header: 'Passwords' },
+                    { field: 'keyCredentials.length', header: 'Keys' },
+                    { field: 'appRoles.length', header: 'Roles defined' },
+                    { field: 'oauth2Permissions.length', header: 'OAuth2 Permissions' },
+                    { field: 'appRoles.length', header: 'Custom owner' },
+                ],
+                groupsMembership: [
+                    { field: 'displayName', header: 'Name' },
+                    { field: 'description', header: 'Description' },
+                ]
+            },
         };
     },
     mounted() {
@@ -142,20 +184,23 @@ export default {
 
         var apiRoute = ""
 
-        if (objectType === "User"){
+        if (objectType === "User") {
             apiRoute = "users"
         }
-        else if(objectType === "Group"){
+        else if (objectType === "Group") {
             apiRoute = "groups"
         }
-        else if(objectType === "Device"){
+        else if (objectType === "Device") {
             apiRoute = "devices"
         }
-        else if(objectType === "Application"){
+        else if (objectType === "Application") {
             apiRoute = "applications"
         }
-        else if(objectType === "ServicePrincipal"){
+        else if (objectType === "ServicePrincipal") {
             apiRoute = "serviceprincipals"
+        }
+        else if (objectType === "AdministrativeUnits") {
+            apiRoute = "administrativeunits"
         }
 
         axios
@@ -164,110 +209,79 @@ export default {
                 this.rawObject = JSON.parse(JSON.stringify(response.data))//Deep copy to ensure its not bound to this.object
                 this.object = response.data;
                 this.object.activeTabItems = []
-                
+
                 if (objectType === "User") {
                     this.object.tabItems = [
-                        { 
+                        {
                             name: "Role Membership",
                             attribute: "memberOfRole",
-                            value: "0",
                             filterFields: ["displayName", "description"],
                             columns: [
                                 { field: 'displayName', header: 'Name' },
                                 { field: 'description', header: 'Description' },
                             ],
                         },
-                        { 
-                            name: "Devices",
+                        {
+                            name: "Owned Devices",
                             attribute: "ownedDevices",
-                            value: "1",
                             filterFields: ["displayName"],
-                            columns: [
-                                { field: 'displayName', header: 'Name' },
-                                { field: 'accountEnabled', header: 'Enabled' },
-                                { field: 'deviceManufacturer', header: 'Manufacturer' },
-                                { field: 'deviceModel', header: 'Model' },
-                                { field: 'deviceOSType', header: 'OS' },
-                                { field: 'deviceOSVersion', header: 'OS Version' },
-                                { field: 'deviceTrustType', header: 'Trust type' },
-                                { field: 'isCompliant', header: 'Compliant' },
-                                { field: 'isManaged', header: 'Managed' },
-                                { field: 'isRooted', header: 'Rooted' },
-                            ],
+                            columns: this.columns.devices,
                         },
-                        { 
-                            name: "ServicePrincipals",
+                        {
+                            name: "Owned ServicePrincipals",
                             attribute: "ownedServicePrincipals",
-                            value: "2",
                             filterFields: ["displayName"],
-                            columns: [
-                                { field: 'displayName', header: 'Name' },
-                                { field: 'publisherName', header: 'Publisher' },
-                                { field: 'microsoftFirstParty', header: 'Microsoft app' },
-                                { field: 'passwordCredentials', header: 'Passwords' },
-                                { field: 'keyCredentials', header: 'Keys' },
-                                { field: 'appRoles', header: 'Roles defined' },
-                                { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
-                                { field: 'ownerUsers', header: 'Custom owner' },
-                            ],
+                            columns: this.columns.servicePrincipals,
                         },
-                        { 
-                            name: "Applications",
+                        {
+                            name: "Owned Applications",
                             attribute: "ownedApplications",
-                            value: "3",
                             filterFields: ["displayName"],
-                            columns: [
-                                { field: 'displayName', header: 'Name' },
-                                { field: 'passwordCredentials', header: 'Passwords' },
-                                { field: 'keyCredentials', header: 'Keys' },
-                                { field: 'appRoles', header: 'Roles defined' },
-                                { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
-                                { field: 'appRoles', header: 'Custom owner' },
-                                { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
-                                { field: 'ownerUsers', header: 'Custom owner' },
-                            ],
+                            columns: this.columns.applications,
                         },
-                        { 
+                        {
+                            name: "Owned Groups",
+                            attribute: "ownedGroups",
+                            filterFields: ["displayName"],
+                            columns: this.columns.groupsMembership,
+                        },
+                        {
                             name: "Group Membership",
                             attribute: "memberOf",
-                            value: "4",
                             filterFields: ["displayName", "description"],
-                            columns: [
-                                { field: 'displayName', header: 'Name' },
-                                { field: 'description', header: 'Description' },
-                            ],
+                            columns: this.columns.groupsMembership,
                         }
                     ];
                     this.object.overviewItems = [
-                        { 
+                        {
                             name: "Display name",
                             value: this.object.displayName,
                         },
-                        { 
+                        {
                             name: "UserPrincipalName",
                             value: this.object.userPrincipalName,
                         },
-                        { 
+                        {
                             name: "ObjectId",
                             value: this.object.objectId,
                         },
-                        { 
+                        {
                             name: "Last password change",
                             value: this.object.lastPasswordChangeDateTime,
                         },
-                        { 
+                        {
                             name: "Account source",
                             value: this.object.dirSyncEnabled ? "Synced with AD" : "Cloud-only",
                         },
-                        { 
+                        {
                             name: "Account type",
                             value: this.object.userType,
                         },
-                        { 
+                        {
                             name: "Creation date",
                             value: this.object.createdDateTime,
                         },
-                        { 
+                        {
                             name: "Creation date",
                             value: this.object.createdDateTime,
                         },
@@ -275,73 +289,86 @@ export default {
                 }
                 else if (objectType === "Group") {
                     this.object.tabItems = [
-                        { 
+                        {
+                            name: "Group memberships (parent groups)",
+                            attribute: "memberOf",
+                            filterFields: ["displayName", "userPrincipalName", "accountEnabled"],
+                            columns: this.columns.groupsMembership,
+                        },
+                        {
                             name: "Owner users",
                             attribute: "ownerUsers",
-                            value: "0",
-                            filterFields: ["displayName", "userPrincipalName","accountEnabled"],
+                            filterFields: ["displayName", "userPrincipalName", "accountEnabled"],
                             columns: [
                                 { field: 'displayName', header: 'Name' },
                                 { field: 'userPrincipalName', header: 'userPrincipalName' },
                                 { field: 'accountEnabled', header: 'Enabled' },
                             ],
                         },
-                        { 
+                        {
+                            name: "Owner service principals",
+                            attribute: "ownerServicePrincipals",
+                            filterFields: ["displayName", "servicePrincipalType"],
+                            columns: [
+                                { field: 'displayName', header: 'Name' },
+                                { field: 'servicePrincipalType', header: 'Type' },
+                            ],
+                        },
+                        {
                             name: "Member users",
                             attribute: "memberUsers",
-                            value: "1",
-                            filterFields: ["displayName", "userPrincipalName","accountEnabled"],
+                            filterFields: ["displayName", "userPrincipalName", "userType", "accountEnabled"],
                             columns: [
                                 { field: 'displayName', header: 'Name' },
                                 { field: 'userPrincipalName', header: 'userPrincipalName' },
+                                { field: 'userType', header: 'Type' },
                                 { field: 'accountEnabled', header: 'Enabled' },
                             ],
                         },
-                        { 
+                        {
+                            name: "Member groups (subgroups)",
+                            attribute: "memberGroups",
+                            filterFields: ["displayName", "description"],
+                            columns: this.columns.groups,
+                        },
+                        {
                             name: "Member ServicePrincipal",
                             attribute: "memberServicePrincipals",
-                            value: "2",
-                            filterFields: ["displayName", "userPrincipalName","accountEnabled"],
+                            filterFields: ["displayName", "servicePrincipalType"],
                             columns: [
                                 { field: 'displayName', header: 'Name' },
-                                { field: 'userPrincipalName', header: 'userPrincipalName' },
-                                { field: 'accountEnabled', header: 'Enabled' },
+                                { field: 'servicePrincipalType', header: 'Type' },
                             ],
                         },
-                        { 
+                        {
                             name: "Member devices",
                             attribute: "memberDevices",
-                            value: "3",
-                            filterFields: ["displayName", "userPrincipalName","accountEnabled"],
-                            columns: [
-                                { field: 'displayName', header: 'Name' },
-                                { field: 'userPrincipalName', header: 'userPrincipalName' },
-                                { field: 'accountEnabled', header: 'Enabled' },
-                            ],
+                            filterFields: ["displayName", "userPrincipalName", "accountEnabled"],
+                            columns: this.columns.devices,
                         },
                     ];
                     this.object.overviewItems = [
-                        { 
+                        {
                             name: "Display name",
                             value: this.object.displayName,
                         },
-                        { 
+                        {
                             name: "Description",
                             value: this.object.description,
                         },
-                        { 
+                        {
                             name: "ObjectId",
                             value: this.object.objectId,
                         },
-                        { 
+                        {
                             name: "Can be assigned to roles",
                             value: this.object.lastPasswordChangeDateTime,
                         },
-                        { 
+                        {
                             name: "Created",
                             value: this.object.createdDateTime,
                         },
-                        { 
+                        {
                             name: "Group source",
                             value: this.object.groups ? "Synced with AD" : "Cloud-only",
                         },
@@ -349,36 +376,44 @@ export default {
                 }
                 else if (objectType === "Device") {
                     this.object.tabItems = [
-                        { 
+                        {
                             name: "Owners",
                             attribute: "owner",
-                            value: "0",
-                            filterFields: ["name","userPrincipalName","accountEnabled"],
+                            filterFields: ["name", "userPrincipalName", "accountEnabled"],
                             columns: [
-                                { field: 'name', header: 'Owner' },
+                                { field: 'displayName', header: 'Owner' },
                                 { field: 'userPrincipalName', header: 'userPrincipalName' },
                                 { field: 'accountEnabled', header: 'Enabled' }
                             ],
                         },
+                        {
+                            name: "Bitlocker Keys",
+                            attribute: "blkeys",
+                            filterFields: ["keyIdentifier", "keyMaterial"],
+                            columns: [
+                                { field: 'keyIdentifier', header: 'Identifier' },
+                                { field: 'keyMaterial', header: 'Recovery key' }
+                            ],
+                        },
                     ];
                     this.object.overviewItems = [
-                        { 
+                        {
                             name: "Display name",
                             value: this.object.displayName,
                         },
-                        { 
+                        {
                             name: "ObjectId",
                             value: this.object.objectId,
                         },
-                        { 
+                        {
                             name: "Device ID",
                             value: this.object.deviceId,
                         },
-                        { 
+                        {
                             name: "Device OS Version",
                             value: this.object.deviceOSVersion,
                         },
-                        { 
+                        {
                             name: "Device OS Type",
                             value: this.object.deviceOSType,
                         },
@@ -386,29 +421,64 @@ export default {
                 }
                 else if (objectType === "Application") {
                     this.object.tabItems = [
+                        {
+                            name: "Owners",
+                            attribute: "ownerUsers",
+                            filterFields: ["displayName", "userPrincipalName"],
+                            columns: [
+                                { field: 'displayName', header: 'Name' },
+                                { field: 'userPrincipalName', header: 'userPrincipalName' },
+                            ],
+                        },
+                        {
+                            name: "Application roles (application permissions)",
+                            attribute: "appRoles",
+                            filterFields: ["value", "allowedMemberTypes", "description", "vale", "id"],
+                            columns: [
+                                { field: 'displayName', header: 'Name' },
+                                { field: 'allowedMemberTypes', header: 'Allowed types' },
+                                { field: 'description', header: 'Description' },
+                                { field: 'value', header: 'Value' },
+                                { field: 'id', header: 'ID' },
+                            ],
+                        },
+                        {
+                            name: "OAuth2 permissions (delegated permissions)",
+                            attribute: "oauth2Permissions",
+                            filterFields: ["value", "allowedMemberTypes", "description", "vale", "id"],
+                            columns: [
+                                { field: 'userConsentDisplayName', header: 'User Consent Name' },
+                                { field: 'type', header: 'Allowed types' },
+                                { field: 'userConsentDescription', header: 'User Consent Description' },
+                                { field: 'adminConsentDisplayName', header: 'Admin Consent Name' },
+                                { field: 'adminConsentDescription', header: 'Admin Consent Description' },
+                                { field: 'value', header: 'Value' },
+                                { field: 'id', header: 'ID' },
+                            ],
+                        },
                     ];
                     this.object.overviewItems = [
-                        { 
+                        {
                             name: "Display name",
                             value: this.object.displayName,
                         },
-                        { 
+                        {
                             name: "ObjectId",
                             value: this.object.objectId,
                         },
-                        { 
+                        {
                             name: "Application ID",
                             value: this.object.applicationId,
                         },
-                        { 
+                        {
                             name: "Publisher",
                             value: this.object.publisher,
                         },
-                        { 
+                        {
                             name: "Homepage",
                             value: this.object.homepage,
                         },
-                        { 
+                        {
                             name: "Service Principal",
                             value: this.object.ownerServicePrincipals[0],
                         },
@@ -416,11 +486,11 @@ export default {
                 }
                 else if (objectType === "ServicePrincipal") {
                     this.object.tabItems = [
-                        { 
+                        {
                             name: "App defined permissions (app permissions)",
                             attribute: "appRoles",
                             value: "0",
-                            filterFields: ["value","displayName","description","id","allowedMemberTypes"],
+                            filterFields: ["value", "displayName", "description", "id", "allowedMemberTypes"],
                             columns: [
                                 { field: 'value', header: 'Value' },
                                 { field: 'displayName', header: 'Name' },
@@ -429,11 +499,11 @@ export default {
                                 { field: 'allowedMemberTypes', header: 'Allowed types' },
                             ],
                         },
-                        { 
+                        {
                             name: "OAuth2 permissions (delegated permissions)",
                             attribute: "oauth2Permissions",
                             value: "1",
-                            filterFields: ["value","displayName","description","id","allowedMemberTypes"],
+                            filterFields: ["value", "displayName", "description", "id", "allowedMemberTypes"],
                             columns: [
                                 { field: 'value', header: 'Value' },
                                 { field: 'userConsentDisplayName', header: 'User Consent Name' },
@@ -446,33 +516,84 @@ export default {
                         },
                     ];
                     this.object.overviewItems = [
-                        { 
+                        {
                             name: "Display name",
                             value: this.object.displayName,
                         },
-                        { 
+                        {
                             name: "ObjectId",
                             value: this.object.objectId,
                         },
-                        { 
+                        {
                             name: "Application ID",
                             value: this.object.appId,
                         },
-                        { 
+                        {
                             name: "Publisher",
                             value: this.object.publisherName,
                         },
-                        { 
+                        {
                             name: "ReplyUrls",
                             value: this.object.replyUrls,
                         },
                     ];
                 }
-                
+                else if (objectType === "AdministrativeUnit") {
+                    this.object.tabItems = [
+                        {
+                            name: "Member users",
+                            attribute: "memberUsers",
+                            filterFields: ["value", "description", "type"],
+                            columns: [
+                                { field: 'value', header: 'Name' },
+                                { field: 'description', header: 'Description' },
+                                { field: 'userType', header: 'userType' },
+                            ],
+                        },
+                        {
+                            name: "Member groups",
+                            attribute: "memberGroups",
+                            filterFields: ["displayName", "description"],
+                            columns: [
+                                { field: 'displayName', header: 'name' },
+                                { field: 'description', header: 'Description' },
+                            ],
+                        },
+                        {
+                            name: "Member devices",
+                            attribute: "memberDevices",
+                            filterFields: ["value", "displayName", "description", "id", "allowedMemberTypes"],
+                            columns: this.columns.devices,
+                        },
+                    ];
+                    this.object.overviewItems = [
+                        {
+                            name: "Display name",
+                            value: this.object.displayName,
+                        },
+                        {
+                            name: "ObjectId",
+                            value: this.object.objectId,
+                        },
+                        {
+                            name: "Application ID",
+                            value: this.object.appId,
+                        },
+                        {
+                            name: "Publisher",
+                            value: this.object.publisherName,
+                        },
+                        {
+                            name: "ReplyUrls",
+                            value: this.object.replyUrls,
+                        },
+                    ];
+                }
+
                 this.object.nbItems = 0
 
                 for (var i = 0; i < this.object.tabItems.length; i++) {
-                    if(this.object[this.object.tabItems[i].attribute].length > 0){
+                    if (this.object[this.object.tabItems[i].attribute].length > 0) {
                         this.activeTabItems.push(this.object.tabItems[i])
                     }
                 }
@@ -491,16 +612,16 @@ export default {
         }
     },
     setup() {
-    const filters = ref({
-      global: { 
-        value: null, 
-        matchMode: FilterMatchMode.CONTAINS
-      },
-    });
+        const filters = ref({
+            global: {
+                value: null,
+                matchMode: FilterMatchMode.CONTAINS
+            },
+        });
 
-    return {
-      filters,
-    };
-  }
+        return {
+            filters,
+        };
+    }
 }
 </script>
