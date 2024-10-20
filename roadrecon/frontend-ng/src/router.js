@@ -9,6 +9,7 @@ import Applications from './pages/Applications.vue'
 import ServicePrincipals from './pages/ServicePrincipals.vue'
 import ApplicationRoles from './pages/ApplicationRoles.vue'
 import OAuth2Permissions from './pages/OAuth2Permissions.vue'
+import Policies from './pages/Policies.vue'
 import RowDetail from './pages/RowDetail.vue'
 
 const routerHistory = createWebHistory()
@@ -83,6 +84,13 @@ export const routes = [
     component: OAuth2Permissions,
     props: {name: 'OAuth2 Permissions'},
     icon: "pi pi-stop"
+  },
+  {
+    path: '/Policies',
+    name: 'Policies',
+    component: Policies,
+    props: {name: 'Policies'},
+    icon: "pi pi-list-check"
   },
   {
     path: '/:objectType/:objectId',

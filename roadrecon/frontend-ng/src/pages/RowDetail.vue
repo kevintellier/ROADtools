@@ -202,6 +202,9 @@ export default {
         else if (objectType === "AdministrativeUnits") {
             apiRoute = "administrativeunits"
         }
+        else if (objectType === "Policy") {
+            apiRoute = "policy"
+        }
 
         axios
             .get(`/api/${apiRoute}/${objectId}`)
@@ -585,6 +588,21 @@ export default {
                         },
                     ];
                 }
+                else if (objectType === "Policy") {
+                    this.object.tabItems = [
+                    ];
+                    this.object.overviewItems = [
+                        {
+                            name: "Display name",
+                            value: this.object.displayName,
+                        },
+                        {
+                            name: "ObjectId",
+                            value: this.object.objectId,
+                        },
+                    ];
+                }
+
 
                 this.object.nbItems = 0
 

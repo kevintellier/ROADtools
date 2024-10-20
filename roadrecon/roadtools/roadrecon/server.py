@@ -116,6 +116,10 @@ class UserSchema(RTModelSchema):
     ownedApplications = fields.Nested(ApplicationsSchema, many=True)
     ownedGroups = fields.Nested(GroupsSchema, many=True)
 
+class PolicySchema(RTModelSchema):
+    class Meta(RTModelSchema.Meta):
+        model = Policy
+
 class DeviceSchema(RTModelSchema):
     class Meta(RTModelSchema.Meta):
         model = Device
@@ -172,6 +176,7 @@ class AuthorizationPolicySchema(RTModelSchema):
 
 # Instantiate all schemas
 user_schema = UserSchema()
+policy_schema = PolicySchema()
 device_schema = DeviceSchema()
 group_schema = GroupSchema()
 application_schema = ApplicationSchema()
@@ -229,7 +234,7 @@ def policy_detail(id):
     policy = db.session.get(Policy,id)
     if not policy:
         abort(404)
-    return user_schema.jsonify(policy)
+    return policy_schema.jsonify(policy)
 
 @app.route("/api/devices", methods=["GET"])
 def get_devices():
