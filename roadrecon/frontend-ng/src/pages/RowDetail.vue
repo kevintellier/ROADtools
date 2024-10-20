@@ -572,20 +572,16 @@ export default {
                             value: this.object.displayName,
                         },
                         {
+                            name: "Description",
+                            value: this.object.description,
+                        },
+                        {
                             name: "ObjectId",
                             value: this.object.objectId,
                         },
                         {
-                            name: "Application ID",
-                            value: this.object.appId,
-                        },
-                        {
-                            name: "Publisher",
-                            value: this.object.publisherName,
-                        },
-                        {
-                            name: "ReplyUrls",
-                            value: this.object.replyUrls,
+                            name: "Dynamic Membership",
+                            value: this.object.membershipRule,
                         },
                     ];
                 }
