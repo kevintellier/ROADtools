@@ -50,7 +50,7 @@ export default {
         { field: 'objectType', header: 'Account type' },
         { field: 'member', header: 'User type' },
       ],
-      filterFields:["displayName","accountEnabled","mail","department","lastPasswordChangeDateTime","jobTitle","mobile","objectType","member"],
+      filterFields:["displayName","userPrincipalName","accountEnabled","mail","department","lastPasswordChangeDateTime","jobTitle","mobile","objectType","member"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },

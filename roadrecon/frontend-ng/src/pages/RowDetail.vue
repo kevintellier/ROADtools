@@ -68,20 +68,20 @@
                     </template>
                 </Card>
                 <!-- TODO Add check here -->
-                <Card>
+                <Card v-if="activeTabItems.length > 0">
                     <template #content>
                         <Tabs value="0" class="rounded">
                             <TabList>
-                                <template v-for="item in object.tabItems" :key="item.name">
-                                    <Tab :value="item.value" v-if="object[item.attribute].length">
+                                <template v-for="(item,tabIndex) in activeTabItems" :key="item.name">
+                                    <Tab :value="String(tabIndex)" v-if="object[item.attribute].length">
                                         {{ item.name }}
                                         <Tag v-if="item && item.attribute" severity="info" :value="object[item.attribute].length"></Tag>
                                     </Tab>
                                 </template>
                             </TabList>
                             <TabPanels>
-                                <template v-for="item in object.tabItems" :key="item.attribute">
-                                    <TabPanel :value="item.value" v-if="object[item.attribute].length" >
+                                <template v-for="(item,tabIndex) in activeTabItems" :key="item.attribute">
+                                    <TabPanel :value="String(tabIndex)" v-if="object[item.attribute].length" >
                                         <ObjectTable :columns="item.columns" :values="object[item.attribute]" :filterFields="item.filterFields"
                                                 :filters="filters" />
                                     </TabPanel>
@@ -129,8 +129,9 @@ export default {
         return {
             object: {
                 memberOfRole: [],
-                tabItems: []
+                tabItems: [],
             },
+            activeTabItems: [],
             name: "User detail",
             rawObject: null
         };
@@ -162,6 +163,7 @@ export default {
             .then(response => {
                 this.rawObject = JSON.parse(JSON.stringify(response.data))//Deep copy to ensure its not bound to this.object
                 this.object = response.data;
+                this.object.activeTabItems = []
                 
                 if (objectType === "User") {
                     this.object.tabItems = [
@@ -176,9 +178,59 @@ export default {
                             ],
                         },
                         { 
+                            name: "Devices",
+                            attribute: "ownedDevices",
+                            value: "1",
+                            filterFields: ["displayName"],
+                            columns: [
+                                { field: 'displayName', header: 'Name' },
+                                { field: 'accountEnabled', header: 'Enabled' },
+                                { field: 'deviceManufacturer', header: 'Manufacturer' },
+                                { field: 'deviceModel', header: 'Model' },
+                                { field: 'deviceOSType', header: 'OS' },
+                                { field: 'deviceOSVersion', header: 'OS Version' },
+                                { field: 'deviceTrustType', header: 'Trust type' },
+                                { field: 'isCompliant', header: 'Compliant' },
+                                { field: 'isManaged', header: 'Managed' },
+                                { field: 'isRooted', header: 'Rooted' },
+                            ],
+                        },
+                        { 
+                            name: "ServicePrincipals",
+                            attribute: "ownedServicePrincipals",
+                            value: "2",
+                            filterFields: ["displayName"],
+                            columns: [
+                                { field: 'displayName', header: 'Name' },
+                                { field: 'publisherName', header: 'Publisher' },
+                                { field: 'microsoftFirstParty', header: 'Microsoft app' },
+                                { field: 'passwordCredentials', header: 'Passwords' },
+                                { field: 'keyCredentials', header: 'Keys' },
+                                { field: 'appRoles', header: 'Roles defined' },
+                                { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
+                                { field: 'ownerUsers', header: 'Custom owner' },
+                            ],
+                        },
+                        { 
+                            name: "Applications",
+                            attribute: "ownedApplications",
+                            value: "3",
+                            filterFields: ["displayName"],
+                            columns: [
+                                { field: 'displayName', header: 'Name' },
+                                { field: 'passwordCredentials', header: 'Passwords' },
+                                { field: 'keyCredentials', header: 'Keys' },
+                                { field: 'appRoles', header: 'Roles defined' },
+                                { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
+                                { field: 'appRoles', header: 'Custom owner' },
+                                { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
+                                { field: 'ownerUsers', header: 'Custom owner' },
+                            ],
+                        },
+                        { 
                             name: "Group Membership",
                             attribute: "memberOf",
-                            value: "1",
+                            value: "4",
                             filterFields: ["displayName", "description"],
                             columns: [
                                 { field: 'displayName', header: 'Name' },
@@ -416,10 +468,27 @@ export default {
                         },
                     ];
                 }
+                
+                this.object.nbItems = 0
+
+                for (var i = 0; i < this.object.tabItems.length; i++) {
+                    if(this.object[this.object.tabItems[i].attribute].length > 0){
+                        this.activeTabItems.push(this.object.tabItems[i])
+                    }
+                }
+                console.log(this.object.activeTabItems)
             })
             .catch(error => {
                 console.log(error);
             });
+    },
+    methods: {
+        processTabItems() {
+            if (this.object && this.object.tabItems) {
+                console.log('Now processing tab items:', this.object.tabItems);
+                // Do whatever you need to with this.object.tabItems here
+            }
+        }
     },
     setup() {
     const filters = ref({

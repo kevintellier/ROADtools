@@ -64,9 +64,8 @@ export default {
     DataTable
   },
   methods: {
-    goToDetail($event) {
-      console.log(this.values[$event.index])
-      this.$router.push({ name: 'RowDetail', params: { objectId: this.values[$event.index].objectId, objectType: this.values[$event.index].objectType } });
+    goToDetail(event) {
+      this.$router.push({ name: 'RowDetail', params: { objectId: event.data.objectId, objectType: event.data.objectType } });
     }
   },
   setup() {
