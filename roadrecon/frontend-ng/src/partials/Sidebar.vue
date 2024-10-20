@@ -57,6 +57,15 @@
         </div>
       </div>
 
+      <!-- Links -->
+      <div class="inline-flex mt-auto">
+        <!-- Pages group -->
+        <div>
+          <p>Copyright (c) 2024</p>
+          <p>Dirk-jan Mollema</p>
+        </div>
+      </div>
+
       <!-- Expand / collapse button -->
       <div class="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
         <div class="w-12 pl-4 pr-3 py-2">
