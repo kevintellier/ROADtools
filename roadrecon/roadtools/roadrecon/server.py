@@ -4,7 +4,7 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from marshmallow_sqlalchemy import ModelConverter
 from marshmallow import fields
-from roadtools.roadlib.metadef.database import User, JSON, Group, DirectoryRole, ServicePrincipal, AppRoleAssignment, TenantDetail, Application, Device, OAuth2PermissionGrant, AuthorizationPolicy, DirectorySetting, AdministrativeUnit, RoleDefinition
+from roadtools.roadlib.metadef.database import User, Policy, JSON, Group, DirectoryRole, ServicePrincipal, AppRoleAssignment, TenantDetail, Application, Device, OAuth2PermissionGrant, AuthorizationPolicy, DirectorySetting, AdministrativeUnit, RoleDefinition
 import os
 import argparse
 from sqlalchemy import func, and_, or_, select
@@ -42,6 +42,11 @@ class UsersSchema(ma.Schema):
     class Meta:
         model = User
         fields = ('objectId', 'objectType', 'userPrincipalName', 'displayName', 'mail', 'lastDirSyncTime', 'accountEnabled', 'department', 'lastPasswordChangeDateTime', 'jobTitle', 'mobile', 'dirSyncEnabled', 'strongAuthenticationDetail', 'userType')
+
+class PoliciesSchema(ma.Schema):
+    class Meta:
+        model = Policy
+        fields = ('objectId', 'objectType', 'deletionTimestamp', 'displayName', 'keyCredentials', 'policyType', 'policyDetail', 'policyIdentifier', 'tenantDefaultPolicy')
 
 class DevicesSchema(ma.Schema):
     class Meta:
@@ -176,6 +181,7 @@ serviceprincipal_schema = ServicePrincipalSchema()
 administrativeunit_schema = AdministrativeUnitSchema()
 authorizationpolicy_schema = AuthorizationPolicySchema(many=True)
 users_schema = UsersSchema(many=True)
+policies_schema = PoliciesSchema(many=True)
 devices_schema = DevicesSchema(many=True)
 groups_schema = GroupsSchema(many=True)
 applications_schema = ApplicationsSchema(many=True)
@@ -211,6 +217,19 @@ def user_detail(id):
     if not user:
         abort(404)
     return user_schema.jsonify(user)
+
+@app.route("/api/policies", methods=["GET"])
+def get_policies():
+    all_policies = db.session.query(Policy).all()
+    result = policies_schema.dump(all_policies)
+    return jsonify(result)
+
+@app.route("/api/policy/<id>", methods=["GET"])
+def policy_detail(id):
+    policy = db.session.get(Policy,id)
+    if not policy:
+        abort(404)
+    return user_schema.jsonify(policy)
 
 @app.route("/api/devices", methods=["GET"])
 def get_devices():
