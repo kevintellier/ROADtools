@@ -76,7 +76,7 @@
                 <Card v-if="activeTabItems.length > 0">
                     <template #content>
                         <Tabs value="0" class="rounded">
-                            <TabList>
+                            <TabList class="overflow-x-auto">
                                 <template v-for="(item, tabIndex) in activeTabItems" :key="item.name">
                                     <Tab :value="String(tabIndex)" v-if="object[item.attribute].length">
                                         {{ item.name }}
