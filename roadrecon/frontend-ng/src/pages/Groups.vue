@@ -12,7 +12,15 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6 overflow-auto rounded-3xl">
-        <ObjectTable :columns="columns" :values="groups" :filterFields="filterFields" :filters="filters" />
+        <ObjectTable 
+        :columns="columns" 
+        :values="groups" 
+        :filterFields="filterFields" 
+        :filters="filters" 
+        :totalRecords
+        :loading
+        @pageChange="fetchData"
+        @inputTextUpdated="fetchData"/>
       </div>
     </div>
   </main>
@@ -52,24 +60,36 @@ export default {
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
+      totalRecords: 0,
+      loading: false
     }
   },
   mounted() {
-    axios
-        .get("/api/groups")
+    this.fetchData({page:1,rows:50})
+  },
+  methods: {
+    fetchData(params) {
+      this.loading = true
+      axios
+        .get(`/api/groups`,{params:params})
         .then(response => {
-            this.groups=response.data;
+            this.groups=response.data.items;
+            this.totalRecords=response.data.total;
+            
             for(var i=0;i<this.groups.length;i++){
               this.groups[i].source = this.groups[i].dirSyncEnabled ? "Synced with AD" : "Cloud-only"
               this.groups[i].groupType = this.groups[i].groupTypes.includes("Unified") ? "Microsoft 365" : "Security"
               this.groups[i].public = this.groups[i].isPublic ? "True" : ""
               this.groups[i].roleAssignable = this.groups[i].isAssignableToRole ? "True" : ""
             }
-            console.log(this.groups)
         })
         .catch(error => {
             console.log(error)
       })
+      .finally(() => {
+          this.loading = false;
+      });
+    },
   }
 }
 </script>

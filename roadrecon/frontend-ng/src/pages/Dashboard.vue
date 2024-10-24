@@ -34,7 +34,7 @@
                         {{ card.title }}
                       </div>
                       <div class="m-0 text-surface-500 dark:text-surface-300 text-4xl font-semibold">
-                        {{ card.value }}
+                        {{ card.value.toLocaleString('fr-FR') }}
                       </div>
                     </div>
                     <i :class="[, 'pi', card.icon, '!text-3xl']"></i>

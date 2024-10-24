@@ -11,8 +11,16 @@
         </div>
       </div>
       <!-- Cards -->
-      <div class="grid gap-6 rounded-3xl overflow-auto">
-        <ObjectTable :columns="columns" :values="approles" :filterFields="filterFields" :filters="filters" />
+      <div class="grid gap-6 overflow-auto rounded-3xl">
+        <ObjectTable 
+        :columns="columns" 
+        :values="approles" 
+        :filterFields="filterFields" 
+        :filters="filters" 
+        :totalRecords
+        :loading
+        @pageChange="fetchData"
+        @inputTextUpdated="fetchData"/>
       </div>
     </div>
   </main>
@@ -45,17 +53,29 @@ export default {
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
+      totalRecords: 0,
+      loading: false
     }
   },
   mounted() {
-    axios
-        .get("/api/approles")
+    this.fetchData({page:1,rows:50})
+  },
+  methods: {
+    fetchData(params) {
+      this.loading = true
+      axios
+        .get(`/api/approles`,{params:params})
         .then(response => {
-            this.approles=response.data;
+            this.approles=response.data.items;
+            this.totalRecords=response.data.total;
         })
         .catch(error => {
             console.log(error)
       })
+      .finally(() => {
+          this.loading = false;
+      });
+    },
   }
 }
 </script>

@@ -7,16 +7,23 @@
 
       <!-- Table -->
       <div class="overflow-x-auto">
-        <DataTable v-model:filters="filters" :value="values" selectionMode="single" tableStyle="min-width: 50rem"
-          paginator :rows="50" :rowsPerPageOptions="[50, 100, 200, 1000]" :globalFilterFields="filterFields"
-          @row-click="goToDetail">
+        <DataTable paginator rows="50" lazy="true" selectionMode="single" tableStyle="min-width: 50rem"
+          v-model:filters="filters" v-model:="filters" :value="values" :loading
+          :rowsPerPageOptions="[50, 100, 200, 1000]" :globalFilterFields="filterFields" :totalRecords
+          @row-click="goToDetail" @page="pageChange">
           <template #header>
-            <IconField>
-              <InputIcon>
-                <i class="pi pi-search" />
-              </InputIcon>
-              <InputText v-model="filters['global'].value" placeholder="Global Search.." />
-            </IconField>
+            <div class="flex">
+              <IconField v-if="!noSearch">
+                <InputIcon>
+                  <i class="pi pi-search" />
+                </InputIcon>
+                <InputText v-model="filters['global'].value" placeholder="Global Search.."
+                  @update:modelValue="inputTextUpdated" />
+              </IconField>
+              <span v-if="totalRecords" class="pl-3 self-center text-gray-400">
+                {{ totalRecords.toLocaleString('fr-FR') }} results
+              </span>
+            </div>
           </template>
           <template #empty> No data found. </template>
           <template #loading> Loading data. Please wait. </template>
@@ -41,6 +48,12 @@ import InputText from 'primevue/inputtext';
 
 export default {
   name: 'ObjectTable',
+  data(){
+    return {
+      page: 0,
+      rows: 50
+    }
+  },
   props: {
     columns: {
       type: Array,
@@ -53,7 +66,21 @@ export default {
     filterFields: {
       type: Array,
       required: false
-    }
+    },
+    totalRecords: {
+      type: Number,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    noSearch: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
   },
   components: {
     InputText,
@@ -66,6 +93,30 @@ export default {
   methods: {
     goToDetail(event) {
       this.$router.push({ name: 'RowDetail', params: { objectId: event.data.objectId, objectType: event.data.objectType } });
+    },
+    pageChange(event) {
+      this.page = event.page
+      this.rows = event.rows
+
+      var params = { 
+        page: this.page + 1,
+        rows: this.rows,
+        search: this.filters.global.value
+      }
+      this.$emit('pageChange', params)
+    },
+    inputTextUpdated(){
+      var params = { 
+        page: this.page + 1, 
+        rows: this.rows, 
+      }
+
+      // Limits search to 3 characters minimum for performance
+      if(this.filters.global.value.length >= 3){
+        params.search = this.filters.global.value
+      }
+      
+      this.$emit('inputTextUpdated', params)
     }
   },
   setup() {
@@ -75,6 +126,7 @@ export default {
         matchMode: FilterMatchMode.CONTAINS
       },
     });
+
 
     return {
       filters,

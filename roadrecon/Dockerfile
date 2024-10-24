@@ -10,4 +10,4 @@ RUN apt update && apt install -y python3 python3-pip
 
 RUN pip3 install --break-system-packages -r requirements.txt
 
-ENTRYPOINT [ "python3","/app/roadtools/roadrecon/server.py" ]
+ENTRYPOINT [ "python3","/app/roadtools/roadrecon/server.py","--debug" ]

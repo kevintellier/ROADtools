@@ -5,9 +5,12 @@ services:
     network_mode: "host"
     volumes:
       - ./frontend-ng/:/usr/src/app/
+    restart: always
   backend:
     build:
       context: .
     volumes:
+      - ./:/app/
       - ./roadrecon.db:/app/roadrecon.db
     network_mode: "host"
+    restart: always

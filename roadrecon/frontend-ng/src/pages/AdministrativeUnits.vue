@@ -12,7 +12,15 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6 overflow-auto rounded-3xl">
-        <ObjectTable :columns="columns" :values="administrativeUnits" :filterFields="filterFields" :filters="filters" />
+        <ObjectTable 
+        :columns="columns" 
+        :values="administrativeUnits" 
+        :filterFields="filterFields" 
+        :filters="filters" 
+        :totalRecords
+        :loading
+        @pageChange="fetchData"
+        @inputTextUpdated="fetchData"/>
       </div>
     </div>
   </main>
@@ -46,21 +54,29 @@ export default {
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
+      totalRecords: 0,
+      loading: false
     }
   },
   mounted() {
-    axios
-        .get("/api/administrativeunits")
+    this.fetchData({page:1,rows:50})
+  },
+  methods: {
+    fetchData(params) {
+      this.loading = true
+      axios
+        .get("/api/administrativeunits",{params:params})
         .then(response => {
-            const administrativeUnits = response.data
-
-            console.log("API data:", administrativeUnits)
-
-            this.administrativeUnits=response.data;
+            this.administrativeUnits=response.data.items;
+            this.totalRecords=response.data.total;
         })
         .catch(error => {
             console.log(error)
       })
+      .finally(() => {
+          this.loading = false;
+      });
+    }
   }
 }
 </script>

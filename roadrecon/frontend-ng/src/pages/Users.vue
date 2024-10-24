@@ -12,7 +12,15 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6 overflow-auto rounded-3xl">
-        <ObjectTable :columns="columns" :values="users" :filterFields="filterFields" :filters="filters" />
+        <ObjectTable 
+        :columns="columns" 
+        :values="users" 
+        :filterFields="filterFields" 
+        :filters="filters" 
+        :totalRecords
+        :loading
+        @pageChange="fetchData"
+        @inputTextUpdated="fetchData"/>
       </div>
     </div>
   </main>
@@ -46,21 +54,28 @@ export default {
         { field: 'department', header: 'Department' },
         { field: 'lastPasswordChangeDateTime', header: 'Last password change' },
         { field: 'jobTitle', header: 'Job title' },
-        { field: 'mobile', header: 'Mobile' },
-        { field: 'objectType', header: 'Account type' },
         { field: 'member', header: 'User type' },
       ],
       filterFields:["displayName","userPrincipalName","accountEnabled","mail","department","lastPasswordChangeDateTime","jobTitle","mobile","objectType","member"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
+      totalRecords: 0,
+      loading: false
     }
   },
   mounted() {
-    axios
-        .get("/api/users")
+    this.fetchData({page:1,rows:50})
+  },
+  methods: {
+    fetchData(params) {
+      this.loading = true
+      axios
+        .get(`/api/users`,{params:params})
         .then(response => {
-            this.users=response.data;
+            this.users=response.data.items;
+            this.totalRecords=response.data.total;
+            
             for(var i=0;i<this.users.length;i++){
               this.users[i].accountEnabled = this.users[i].accountEnabled ? "True" : "False"
             }
@@ -68,6 +83,10 @@ export default {
         .catch(error => {
             console.log(error)
       })
+      .finally(() => {
+          this.loading = false;
+        });
+    },
   }
 }
 </script>

@@ -18,8 +18,8 @@
             <AccordionPanel :value="String(index)" v-if="directoryRole.assignments.length > 0">
                 <AccordionHeader>
                   <span class="flex items-center gap-2 w-full">
-                    <span>{{ directoryRole.displayName }}</span>
                     <Tag severity="info" :value="directoryRole.assignments.length"></Tag>
+                    <span>{{ directoryRole.displayName }}</span>
                   </span>
                 </AccordionHeader>
                 <AccordionContent>

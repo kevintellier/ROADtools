@@ -12,7 +12,15 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6 overflow-auto rounded-3xl">
-        <ObjectTable :columns="columns" :values="serviceprincipals" :filterFields="filterFields" :filters="filters" />
+        <ObjectTable 
+        :columns="columns" 
+        :values="serviceprincipals" 
+        :filterFields="filterFields" 
+        :filters="filters" 
+        :totalRecords
+        :loading
+        @pageChange="fetchData"
+        @inputTextUpdated="fetchData"/>
       </div>
     </div>
   </main>
@@ -53,13 +61,22 @@ export default {
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
+      totalRecords: 0,
+      loading: false
     }
   },
   mounted() {
-    axios
-        .get("/api/serviceprincipals")
+    this.fetchData({page:1,rows:50})
+  },
+  methods: {
+    fetchData(params) {
+      this.loading = true
+      axios
+        .get(`/api/serviceprincipals`,{params:params})
         .then(response => {
-            this.serviceprincipals=response.data;
+            this.serviceprincipals=response.data.items;
+            this.totalRecords=response.data.total;
+            
             for(var i=0;i<this.serviceprincipals.length;i++){
               this.serviceprincipals[i].accountEnabled = this.serviceprincipals[i].accountEnabled ? "Enabled" : "Disabled"
               this.serviceprincipals[i].microsoftFirstParty = this.serviceprincipals[i].microsoftFirstParty ? "True" : "False"
@@ -69,11 +86,14 @@ export default {
               this.serviceprincipals[i].oauth2Permissions = this.serviceprincipals[i].oauth2Permissions.length > 0 ? this.serviceprincipals[i].oauth2Permissions.length : ""
               this.serviceprincipals[i].ownerUsers = this.serviceprincipals[i].ownerUsers.length > 0 ? "True" : ""
             }
-            console.log(this.serviceprincipals)
         })
         .catch(error => {
             console.log(error)
       })
+      .finally(() => {
+          this.loading = false;
+      });
+    },
   }
 }
 </script>

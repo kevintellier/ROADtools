@@ -12,7 +12,15 @@
       </div>
       <!-- Cards -->
       <div class="grid gap-6 overflow-auto rounded-3xl">
-        <ObjectTable :columns="columns" :values="applications" :filterFields="filterFields" :filters="filters" />
+        <ObjectTable 
+        :columns="columns" 
+        :values="applications" 
+        :filterFields="filterFields" 
+        :filters="filters" 
+        :totalRecords
+        :loading
+        @pageChange="fetchData"
+        @inputTextUpdated="fetchData"/>
       </div>
     </div>
   </main>
@@ -53,28 +61,40 @@ export default {
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
+      totalRecords: 0,
+      loading: false
     }
   },
   mounted() {
-    axios
-        .get("/api/applications")
+    this.fetchData({page:1,rows:50})
+  },
+  methods: {
+    fetchData(params) {
+      this.loading = true
+      axios
+        .get(`/api/applications`,{params:params})
         .then(response => {
-            this.applications=response.data;
+            this.applications=response.data.items;
+            this.totalRecords=response.data.total;
+            
             for(var i=0;i<this.applications.length;i++){
               this.applications[i].availableToOtherTenants = this.applications[i].availableToOtherTenants ? "True" : ""
               this.applications[i].oauth2AllowImplicitFlow = this.applications[i].oauth2AllowImplicitFlow ? "True" : ""
               this.applications[i].publicClient = this.applications[i].publicClient ? "True" : ""
-              this.applications[i].passwordCredentials = this.applications[i].passwordCredentials.toString()
-              this.applications[i].keyCredentials = this.applications[i].keyCredentials.toString()
-              this.applications[i].appRoles = this.applications[i].appRoles.toString()
-              this.applications[i].oauth2Permissions = this.applications[i].oauth2Permissions.toString()
+              this.applications[i].passwordCredentials = this.applications[i].passwordCredentials.length
+              this.applications[i].keyCredentials = this.applications[i].keyCredentials.length
+              this.applications[i].appRoles = this.applications[i].appRoles.length
+              this.applications[i].oauth2Permissions = this.applications[i].oauth2Permissions.length
               this.applications[i].ownerUsers = this.applications[i].ownerUsers.length > 0 ? "True" : ""
             }
-            console.log(this.applications)
         })
         .catch(error => {
             console.log(error)
       })
+      .finally(() => {
+          this.loading = false;
+      });
+    },
   }
 }
 </script>
