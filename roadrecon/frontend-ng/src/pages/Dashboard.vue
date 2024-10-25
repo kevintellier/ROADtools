@@ -48,40 +48,6 @@
           <Card>
             <template #title>
               <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
-                Tenant domains
-              </div>
-            </template>
-            <template #content>
-              <ObjectTable :columns="columns" :values="tenantDomains" :filterFields="filterFields" :filters="filters" />
-            </template>
-          </Card>
-        </div>
-        <div class="col-span-12 xl:col-span-5 pt-0 !pl-0">
-          <Card class="h-full">
-            <template #title>
-              <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
-                Tenant information
-              </div>
-            </template>
-            <template #content>
-              <div v-for="(item, index) in overviewItems" class="p-6 gap-4"
-                :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-                <div class="flex flex-row justify-items-stretch gap-4">
-                  <div class="justify-self-start basis-1/4 gap-2 ">
-                    <div class="text-md font-semibold font-medium">{{ item.name }}</div>
-                  </div>
-                  <div class="justify-self-start gap-4">
-                    <span class="text-md">{{ item.value }}</span>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </Card>
-        </div>
-        <div class="col-span-12 xl:col-span-7 pt-0">
-          <Card>
-            <template #title>
-              <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
                 Default user role permissions
               </div>
             </template>
@@ -111,12 +77,12 @@
           </Card>
         </div>
         <div class="col-span-12 xl:col-span-5 pt-0">
-          <div class="flex gap-4 items-center">
+          <div class="flex gap-4 items-center h-full">
             <div v-for="(card, index) in smallCards" class="basis-1/2">
               <Card :class="[card.value ? 'p-tag-success' : 'p-tag-danger ']">
                 <template #content>
                   <div
-                    class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between h-full !rounded-2xl">
+                    class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
                     <div class="overview-info">
                       <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
                         {{ card.title }}
@@ -130,6 +96,40 @@
               </Card>
             </div>
           </div>
+        </div>
+        <div class="col-span-12 xl:col-span-7 pt-0">
+          <Card>
+            <template #title>
+              <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
+                Tenant domains
+              </div>
+            </template>
+            <template #content>
+              <ObjectTable :columns :values="tenantDomains" :filterFields :filters />
+            </template>
+          </Card>
+        </div>
+        <div class="col-span-12 xl:col-span-5 pt-0 !pl-0">
+          <Card>
+            <template #title>
+              <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
+                Tenant information
+              </div>
+            </template>
+            <template #content>
+              <div v-for="(item, index) in overviewItems" class="p-6 gap-4"
+                :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+                <div class="flex flex-row justify-items-stretch gap-4">
+                  <div class="justify-self-start basis-1/4 gap-2 ">
+                    <div class="text-md font-semibold font-medium">{{ item.name }}</div>
+                  </div>
+                  <div class="justify-self-start gap-4">
+                    <span class="text-md">{{ item.value }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </Card>
         </div>
       </div>
     </div>
