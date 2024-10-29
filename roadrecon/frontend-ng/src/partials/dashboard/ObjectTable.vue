@@ -4,12 +4,11 @@
       <h2 class="font-semibold text-gray-800 dark:text-gray-100">{{ title }}</h2>
     </header>
     <div>
-
       <!-- Table -->
       <div class="overflow-x-auto">
-        <DataTable paginator rows="50" lazy="true" selectionMode="single" tableStyle="min-width: 50rem"
+        <DataTable paginator :rows=rowsPerPageOptions[0] lazy="true" selectionMode="single" tableStyle="min-width: 50rem"
           v-model:filters="filters" v-model:="filters" :value="values" :loading
-          :rowsPerPageOptions="[50, 100, 200, 1000]" :globalFilterFields="filterFields" :totalRecords
+          :rowsPerPageOptions :globalFilterFields="filterFields" :totalRecords
           @row-click="goToDetail" @page="pageChange">
           <template #header>
             <div class="flex">
@@ -81,6 +80,11 @@ export default {
       required: false,
       default: false
     },
+    rowsPerPageOptions: {
+      type: Array,
+      required: false,
+      default: "[50, 100, 200, 1000]"
+    }
   },
   components: {
     InputText,

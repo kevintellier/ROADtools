@@ -105,7 +105,7 @@
               </div>
             </template>
             <template #content>
-              <ObjectTable :columns :values="tenantDomains" :filterFields :filters />
+              <ObjectTable :columns :values="tenantDomains" :filterFields :filters :totalRecords :rowsPerPageOptions="[10,25,50]" />
             </template>
           </Card>
         </div>
@@ -230,8 +230,7 @@ export default {
       .get("/api/tenantdetails")
       .then(response => {
         this.tenantDomains = response.data.verifiedDomains
-
-        console.log(response.data.verifiedDomains)
+        this.totalRecords = response.data.verifiedDomains.length
 
         const tenantInformation = [
           {
