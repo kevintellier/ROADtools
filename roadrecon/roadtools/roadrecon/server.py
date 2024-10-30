@@ -13,6 +13,7 @@ from sqlalchemy import func, and_, or_, select
 from sqlalchemy.event import listens_for
 from sqlalchemy.pool import _ConnectionRecord
 import mimetypes
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -277,15 +278,103 @@ def user_detail(id):
 @app.route("/api/policies", methods=["GET"])
 def get_policies():
     all_policies = db.session.query(Policy).all()
-    result = policies_schema.dump(all_policies)
-    return jsonify(result)
+    results = policies_schema.dump(all_policies)
 
-@app.route("/api/policy/<id>", methods=["GET"])
-def policy_detail(id):
-    policy = db.session.get(Policy,id)
-    if not policy:
-        abort(404)
-    return policy_schema.jsonify(policy)
+    for policy in results:
+        if policy['policyType'] == 18:
+            policy['policyDetail'] = json.loads(policy['policyDetail'][0])
+            if 'Conditions' in policy['policyDetail']:
+                conditions = policy['policyDetail']['Conditions']
+                if 'Applications' in conditions:
+                    applications = conditions['Applications']
+                    for key in applications.keys():
+                        resolved = []
+                        for app in applications[key][0]['Applications']:
+                            if app == "All":
+                                resolved.append({
+                                    'displayName':'All',
+                                    'objectId':'None'
+                                })
+                            # If its an appId (UUID)
+                            elif len(app) == 36:
+                                application = db.session.query(ServicePrincipal).filter(ServicePrincipal.appId == app).first()
+                                if application is not None:
+                                    resolved.append({
+                                        'displayName': application.displayName,
+                                        'objectId': app
+                                    })
+                                else:
+                                    resolved.append({
+                                        'displayName': app,
+                                        'objectId': app
+                                    })
+                            # Already resolved, just pass
+                            else:
+                                resolved.append({
+                                    'displayName':app,
+                                    'objectId':'None'
+                                })
+                        applications[key][0]['Applications'] = resolved
+                if 'Users' in conditions:
+                    users = conditions['Users']
+                    for key in users.keys():
+                        if 'Users' in users[key][0]:
+                            resolved = []
+                            for usr in users[key][0]['Users']:
+                                if usr == "All":
+                                    resolved.append({
+                                        'displayName':'All',
+                                        'objectId':'None'
+                                    })
+                                # If its an appId (UUID)
+                                elif len(usr) == 36:
+                                    user = db.session.query(User).filter(User.objectId == usr).first()
+                                    if user is not None:
+                                        resolved.append({
+                                            'displayName': user.displayName,
+                                            'objectId': usr
+                                        })
+                                    else:
+                                        resolved.append({
+                                            'displayName': 'usr',
+                                            'objectId': usr
+                                        })
+                                # Already resolved, just pass
+                                else:
+                                    resolved.append({
+                                        'displayName': usr,
+                                        'objectId':'None'
+                                    })
+                            users[key][0]['Users'] = resolved
+                        if 'Groups' in users[key][0]:
+                            resolved = []
+                            for grp in users[key][0]['Groups']:
+                                if grp == "All":
+                                    resolved.append({
+                                        'displayName':'All',
+                                        'objectId':'None'
+                                    })
+                                # If its an appId (UUID)
+                                elif len(grp) == 36:
+                                    group = db.session.query(Group).filter(Group.objectId == grp).first()
+                                    if group is not None:
+                                        resolved.append({
+                                            'displayName': group.displayName,
+                                            'objectId': grp
+                                        })
+                                    else:
+                                        resolved.append({
+                                            'displayName': grp,
+                                            'objectId': grp
+                                        })
+                                # Already resolved, just pass
+                                else:
+                                    resolved.append({
+                                        'displayName': grp,
+                                        'objectId':'None'
+                                    })
+                            users[key][0]['Groups'] = resolved
+    return jsonify(results)
 
 @app.route("/api/devices", methods=["GET"])
 def get_devices():

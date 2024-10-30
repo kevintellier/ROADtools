@@ -11,7 +11,7 @@
         </div>
       </div>
       <!-- Cards -->
-      <div class="grid gap-6 rounded-3xl overflow-auto">
+      <div class="grid gap-6 rounded-3xl overflow-auto" v-if="!loading">
         <!--Don't know why its 11 -->
         <Accordion multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="policies">
           <template v-for="(policy, index) in policies">
@@ -52,8 +52,8 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.Users.Include[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'Groups'">In group {{ element }}</p>
-                                    <p v-if="index == 'Users'">User(s) {{ element }}</p>
+                                    <p v-if="index == 'Groups'">In group {{ element.displayName }}</p>
+                                    <p v-if="index == 'Users'">User(s) {{ element.displayName }}</p>
                                     <p v-if="index == 'GuestsOrExternalUsers'">Guests or External Users : {{ element }}
                                     </p>
                                   </li>
@@ -72,8 +72,8 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.Users.Exclude[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'Groups'">In group {{ element }}</p>
-                                    <p v-if="index == 'Users'">User(s) {{ element }}</p>
+                                    <p v-if="index == 'Groups'">In group {{ element.displayName }}</p>
+                                    <p v-if="index == 'Users'">User(s) {{ element.displayName }}</p>
                                     <p v-if="index == 'GuestsOrExternalUsers'">Guests or External Users : {{ element }}
                                     </p>
                                   </li>
@@ -99,7 +99,7 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.Applications.Include[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'Applications'">Application(s) {{ element }}</p>
+                                    <p v-if="index == 'Applications'">Application(s) {{ element.displayName }}</p>
                                   </li>
                                 </ul>
                               </div>
@@ -116,7 +116,7 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.Applications.Exclude[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'Applications'">Application(s) {{ element }}</p>
+                                    <p v-if="index == 'Applications'">Application(s) {{ element.displayName }}</p>
                                   </li>
                                 </ul>
                               </div>
@@ -244,6 +244,9 @@
           </template>
         </Card>
       </div>
+      <div class="grid gap-6 rounded-3xl overflow-auto" v-else>
+        <h1 class="text-lg">Loading...</h1>
+      </div>
     </div>
   </main>
 </template>
@@ -306,7 +309,8 @@ export default {
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
-      rawObject: {}
+      rawObject: {},
+      loading: true
     }
   },
   mounted() {
@@ -317,12 +321,14 @@ export default {
           if (response.data[i].policyType == 18) {
             this.policies.push({
               displayName: response.data[i].displayName,
-              policyDetail: JSON.parse(response.data[i].policyDetail[0]),
+              policyDetail: response.data[i].policyDetail,
               objectId: response.data[i].objectId,
               raw: JSON.parse(JSON.stringify(response.data[i],null,2))
             })
           }
         }
+      }).finally(()=>{
+        this.loading = false
       })
       .catch(error => {
         console.log(error)
