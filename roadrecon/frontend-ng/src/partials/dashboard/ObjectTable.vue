@@ -83,7 +83,7 @@ export default {
     rowsPerPageOptions: {
       type: Array,
       required: false,
-      default: "[50, 100, 200, 1000]"
+      default: [50, 100, 200, 1000]
     }
   },
   components: {
