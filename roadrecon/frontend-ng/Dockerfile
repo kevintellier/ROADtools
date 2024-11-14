@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 RUN npm install --include=dev
+RUN npm install vite
 
 RUN apt update
 RUN apt install -y vim
