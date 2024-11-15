@@ -208,17 +208,23 @@
                       <div v-if="policy.policyDetail.Controls">
                         <span class="pi pi-check-circle"></span>
                         <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Controls</span>
-                        <div class="flex flex-wrap" v-if="policy.policyDetail.Controls">
+                        <div class="flex flex-wrap">
                           <div class="flex-1 m-4 p-tag-info p-4 rounded-2xl">
                             <div
                               class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
                               <div class="overview-info">
-                                <ul v-for="(item, index) in policy.policyDetail.Controls"
-                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
-                                  <li v-for="element in item">
-                                    <p>{{ element[0] }}</p>
-                                  </li>
-                                </ul>
+                                <template v-if="policy.policyDetail.Controls">
+                                  <ul v-for="(item, index) in policy.policyDetail.Controls"
+                                    class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                    <li v-for="(control) in item.Control">
+                                      <p v-if="control != Block">{{ control }}</p>
+                                      <p v-else>Deny logon</p>
+                                    </li>
+                                    <li v-if="item.AuthStrengthIds">
+                                      <p>{{ resolve_authstrength(item.AuthStrengthIds) }}</p>
+                                    </li>
+                                  </ul>
+                                </template>
                               </div>
                             </div>
                           </div>
@@ -337,6 +343,14 @@ export default {
   methods: {
     goToDetail(event) {
       this.$router.push({ name: 'RowDetail', params: { objectId: event.data.objectId, objectType: "Policy" } });
+    },
+    resolve_authstrength(guid){
+      var built_in = {
+        '00000000-0000-0000-0000-000000000002': 'Multi-factor authentication',
+        '00000000-0000-0000-0000-000000000003': 'Passwordless MFA',
+        '00000000-0000-0000-0000-000000000004': 'Phishing-resistant MFA'
+      }
+      return built_in[guid]
     }
   },
 }
