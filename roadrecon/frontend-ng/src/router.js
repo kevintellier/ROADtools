@@ -97,12 +97,17 @@ export const routes = [
     name: 'RowDetail',
     component: RowDetail,
     hideNavbar: true,
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/'
   }
 ]
 
 const router = createRouter({
   history: routerHistory,
-  routes: routes
+  routes: routes,
+  mode: 'history'
 })
 
 export default router

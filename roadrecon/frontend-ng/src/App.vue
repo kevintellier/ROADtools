@@ -5,7 +5,7 @@
     <!-- Content area -->
     <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
       <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen" />
-      <router-view />
+      <router-view :key="$route.fullPath"/>
     </div>
   </div>
 </template>

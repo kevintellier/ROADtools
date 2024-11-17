@@ -63,7 +63,7 @@ class DevicesSchema(ma.Schema):
 class DirectoryRoleSchema(ma.Schema):
     class Meta:
         model = DirectoryRole
-        fields = ('displayName', 'description')
+        fields = ('displayName', 'description', 'objectId', 'objectType')
 
 class OAuth2PermissionGrantsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
