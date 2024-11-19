@@ -99,7 +99,8 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.Applications.Include[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'Applications'">Application(s) {{ element.displayName }}</p>
+                                    <p v-if="element == 'All'">All Applications</p>
+                                    <p v-else>{{ element.displayName }}</p>
                                   </li>
                                 </ul>
                               </div>
@@ -116,7 +117,8 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.Applications.Exclude[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'Applications'">Application(s) {{ element.displayName }}</p>
+                                    <p v-if="element == 'All'">All Applications</p>
+                                    <p v-else>{{ element.displayName }}</p>
                                   </li>
                                 </ul>
                               </div>
@@ -140,7 +142,8 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.ClientTypes.Include[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'ClientTypes'">ClientTypes {{ element }}</p>
+                                    <p v-if="element == 'All'">All ClientTypes</p>
+                                    <p v-else>{{ element }}</p>
                                   </li>
                                 </ul>
                               </div>
@@ -157,7 +160,8 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.ClientTypes.Exclude[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'ClientTypes'">ClientTypes {{ element }}</p>
+                                    <p v-if="element == 'All'">All ClientTypes</p>
+                                    <p v-else>{{ element }}</p>
                                   </li>
                                 </ul>
                               </div>
@@ -180,7 +184,8 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.DevicePlatforms.Include[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'DevicePlatforms'">Platform {{ element }}</p>
+                                    <p v-if="element == 'All'">All Platforms</p>
+                                    <p v-else>{{ element }}</p>
                                   </li>
                                 </ul>
                               </div>
@@ -197,7 +202,91 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.DevicePlatforms.Exclude[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="index == 'DevicePlatforms'">Platform {{ element }}</p>
+                                    <p v-if="element == 'All'">All Platforms</p>
+                                    <p v-else>{{ element }}</p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-if="policy.policyDetail.Conditions.Devices">
+                        <span class="pi pi-desktop"></span>
+                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Devices</span>
+                        <div class="flex flex-wrap" v-if="policy.policyDetail.Conditions.Devices">
+                          <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl"
+                            v-if="policy.policyDetail.Conditions.Devices.Include">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                                  Including
+                                </div>
+                                <ul v-for="condition in policy.policyDetail.Conditions.Devices.Include" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li v-for="item,index in condition">
+                                    <p v-if="index == 'DeviceRule'">Device Rule : {{ item }}</p>
+                                    <p v-if="index == 'DeviceStates'">Device State: {{ item }}</p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="flex-1 m-4 p-tag-danger p-4 rounded-2xl"
+                            v-if="policy.policyDetail.Conditions.Devices.Exclude">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                                  Excluding
+                                </div>
+                                <ul v-for="condition in policy.policyDetail.Conditions.Devices.Exclude"
+                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li v-for="item,index in condition">
+                                    <p v-if="index == 'DeviceRule'">Device Rule : <i>{{ item }}</i></p>
+                                    <p v-if="index == 'DeviceStates'">Device State: {{ item }}</p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-if="policy.policyDetail.Conditions.Locations">
+                        <span class="pi pi-desktop"></span>
+                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Locations</span>
+                        <div class="flex flex-wrap" v-if="policy.policyDetail.Conditions.Locations">
+                          <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl"
+                            v-if="policy.policyDetail.Conditions.Locations.Include">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                                  Including
+                                </div>
+                                <ul v-for="(item, index) in policy.policyDetail.Conditions.Locations.Include[0]"
+                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li v-for="element in item">
+                                    <p v-if="element == 'All'">All Locations</p>
+                                    <p v-else>{{ element }}</p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="flex-1 m-4 p-tag-danger p-4 rounded-2xl"
+                            v-if="policy.policyDetail.Conditions.Locations.Exclude">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                                  Excluding
+                                </div>
+                                <ul v-for="(item, index) in policy.policyDetail.Conditions.Locations.Exclude[0]"
+                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li v-for="element in item">
+                                    <p v-if="element == 'All'">All Locations</p>
+                                    <p v-else>{{ element }}</p>
                                   </li>
                                 </ul>
                               </div>
@@ -222,6 +311,27 @@
                                     </li>
                                     <li v-if="item.AuthStrengthIds">
                                       <p>{{ resolve_authstrength(item.AuthStrengthIds) }}</p>
+                                    </li>
+                                  </ul>
+                                </template>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-if="policy.policyDetail.SessionControls">
+                        <span class="pi pi-check-circle"></span>
+                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Session Controls</span>
+                        <div class="flex flex-wrap">
+                          <div class="flex-1 m-4 p-tag-info p-4 rounded-2xl">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <template v-if="policy.policyDetail.SessionControls">
+                                  <ul v-for="(item, index) in policy.policyDetail.SessionControls"
+                                    class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                    <li>
+                                      <p>{{ item }}</p>
                                     </li>
                                   </ul>
                                 </template>
