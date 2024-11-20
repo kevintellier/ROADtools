@@ -49,13 +49,21 @@
                                 <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
                                   Including
                                 </div>
-                                <ul v-for="(item, index) in policy.policyDetail.Conditions.Users.Include[0]"
+                                <ul v-for="item in policy.policyDetail.Conditions.Users.Include"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
-                                  <li v-for="element in item">
-                                    <p v-if="index == 'Groups'">In group {{ element.displayName }}</p>
-                                    <p v-if="index == 'Users'">User(s) {{ element.displayName }}</p>
-                                    <p v-if="index == 'GuestsOrExternalUsers'">Guests or External Users : {{ element }}
-                                    </p>
+                                  <li v-for="element,index in item">
+                                    <template v-if="index == 'GuestsOrExternalUsers'">
+                                      <p>{{index}}:</p>
+                                      <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                        <p>{{ objectType }}</p>
+                                      </ul>
+                                    </template>
+                                    <template v-else>
+                                      <p>{{index}}:</p>
+                                      <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                        <p>{{ objectType.displayName }}</p>
+                                      </ul>
+                                    </template>
                                   </li>
                                 </ul>
                               </div>
@@ -69,13 +77,21 @@
                                 <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
                                   Excluding
                                 </div>
-                                <ul v-for="(item, index) in policy.policyDetail.Conditions.Users.Exclude[0]"
+                                <ul v-for="item in policy.policyDetail.Conditions.Users.Exclude"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
-                                  <li v-for="element in item">
-                                    <p v-if="index == 'Groups'">In group {{ element.displayName }}</p>
-                                    <p v-if="index == 'Users'">User(s) {{ element.displayName }}</p>
-                                    <p v-if="index == 'GuestsOrExternalUsers'">Guests or External Users : {{ element }}
-                                    </p>
+                                  <li v-for="element,index in item">
+                                    <template v-if="index == 'GuestsOrExternalUsers'">
+                                      <p>{{index}}:</p>
+                                      <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                        <p>{{ objectType }}</p>
+                                      </ul>
+                                    </template>
+                                    <template v-else>
+                                      <p>{{index}}:</p>
+                                      <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                        <p>{{ objectType.displayName }}</p>
+                                      </ul>
+                                    </template>
                                   </li>
                                 </ul>
                               </div>
@@ -171,7 +187,7 @@
                       </div>
                       <div v-if="policy.policyDetail.Conditions.DevicePlatforms">
                         <span class="pi pi-desktop"></span>
-                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Devices</span>
+                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Platforms</span>
                         <div class="flex flex-wrap" v-if="policy.policyDetail.Conditions.DevicePlatforms">
                           <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl"
                             v-if="policy.policyDetail.Conditions.DevicePlatforms.Include">
@@ -225,7 +241,7 @@
                                 </div>
                                 <ul v-for="condition in policy.policyDetail.Conditions.Devices.Include" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="item,index in condition">
-                                    <p v-if="index == 'DeviceRule'">Device Rule : {{ item }}</p>
+                                    <p v-if="index == 'DeviceRule'">Rule : {{ item }}</p>
                                     <p v-if="index == 'DeviceStates'">Device State: {{ item }}</p>
                                   </li>
                                 </ul>
@@ -243,7 +259,7 @@
                                 <ul v-for="condition in policy.policyDetail.Conditions.Devices.Exclude"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="item,index in condition">
-                                    <p v-if="index == 'DeviceRule'">Device Rule : <i>{{ item }}</i></p>
+                                    <p v-if="index == 'DeviceRule'">Rule : <i>{{ item }}</i></p>
                                     <p v-if="index == 'DeviceStates'">Device State: {{ item }}</p>
                                   </li>
                                 </ul>

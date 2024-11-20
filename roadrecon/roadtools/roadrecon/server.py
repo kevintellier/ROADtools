@@ -318,62 +318,65 @@ def get_policies():
                 if 'Users' in conditions:
                     users = conditions['Users']
                     for key in users.keys():
-                        if 'Users' in users[key][0]:
-                            resolved = []
-                            for usr in users[key][0]['Users']:
-                                if usr == "All":
-                                    resolved.append({
-                                        'displayName':'All',
-                                        'objectId':'None'
-                                    })
-                                # If its an appId (UUID)
-                                elif len(usr) == 36:
-                                    user = db.session.query(User).filter(User.objectId == usr).first()
-                                    if user is not None:
+                        if len(users[key]) > 1:
+                            print(users[key],file=sys.stderr)
+                        for (index, object_type) in enumerate(users[key]):
+                            if 'Users' in object_type:
+                                resolved = []
+                                for usr in users[key][index]['Users']:
+                                    if usr == "All":
                                         resolved.append({
-                                            'displayName': user.displayName,
-                                            'objectId': usr
+                                            'displayName':'All',
+                                            'objectId':'None'
                                         })
+                                    # If its an appId (UUID)
+                                    elif len(usr) == 36:
+                                        user = db.session.query(User).filter(User.objectId == usr).first()
+                                        if user is not None:
+                                            resolved.append({
+                                                'displayName': user.displayName,
+                                                'objectId': usr
+                                            })
+                                        else:
+                                            resolved.append({
+                                                'displayName': 'usr',
+                                                'objectId': usr
+                                            })
+                                    # Already resolved, just pass
                                     else:
                                         resolved.append({
-                                            'displayName': 'usr',
-                                            'objectId': usr
+                                            'displayName': usr,
+                                            'objectId':'None'
                                         })
-                                # Already resolved, just pass
-                                else:
-                                    resolved.append({
-                                        'displayName': usr,
-                                        'objectId':'None'
-                                    })
-                            users[key][0]['Users'] = resolved
-                        if 'Groups' in users[key][0]:
-                            resolved = []
-                            for grp in users[key][0]['Groups']:
-                                if grp == "All":
-                                    resolved.append({
-                                        'displayName':'All',
-                                        'objectId':'None'
-                                    })
-                                # If its an appId (UUID)
-                                elif len(grp) == 36:
-                                    group = db.session.query(Group).filter(Group.objectId == grp).first()
-                                    if group is not None:
+                                users[key][index]['Users'] = resolved
+                            if 'Groups' in object_type:
+                                resolved = []
+                                for grp in users[key][index]['Groups']:
+                                    if grp == "All":
                                         resolved.append({
-                                            'displayName': group.displayName,
-                                            'objectId': grp
+                                            'displayName':'All',
+                                            'objectId':'None'
                                         })
+                                    # If its an appId (UUID)
+                                    elif len(grp) == 36:
+                                        group = db.session.query(Group).filter(Group.objectId == grp).first()
+                                        if group is not None:
+                                            resolved.append({
+                                                'displayName': group.displayName,
+                                                'objectId': grp
+                                            })
+                                        else:
+                                            resolved.append({
+                                                'displayName': grp,
+                                                'objectId': grp
+                                            })
+                                    # Already resolved, just pass
                                     else:
                                         resolved.append({
                                             'displayName': grp,
-                                            'objectId': grp
+                                            'objectId':'None'
                                         })
-                                # Already resolved, just pass
-                                else:
-                                    resolved.append({
-                                        'displayName': grp,
-                                        'objectId':'None'
-                                    })
-                            users[key][0]['Groups'] = resolved
+                                users[key][index]['Groups'] = resolved
     return jsonify(results)
 
 @app.route("/api/devices", methods=["GET"])
