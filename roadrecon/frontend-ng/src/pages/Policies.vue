@@ -99,6 +99,52 @@
                           </div>
                         </div>
                       </div>
+                      <div v-if="policy.policyDetail.Conditions.ServicePrincipals">
+                        <span class="pi pi-user"></span>
+                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Service Principals</span>
+                        <div class="flex flex-wrap">
+                          <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl"
+                            v-if="policy.policyDetail.Conditions.ServicePrincipals.Include">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                                  Including
+                                </div>
+                                <ul v-for="item in policy.policyDetail.Conditions.ServicePrincipals.Include"
+                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li v-for="element,index in item">
+                                    <p>{{index}}:</p>
+                                    <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                      <p>{{ objectType.displayName }}</p>
+                                    </ul>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="flex-1 m-4 p-tag-danger p-4 rounded-2xl"
+                            v-if="policy.policyDetail.Conditions.ServicePrincipals.Exclude">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                                  Excluding
+                                </div>
+                                <ul v-for="item in policy.policyDetail.Conditions.ServicePrincipals.Exclude"
+                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li v-for="element,index in item">
+                                    <p>{{index}}:</p>
+                                    <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                      <p>{{ objectType.displayName }}</p>
+                                    </ul>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                       <div v-if="policy.policyDetail.Conditions.Applications">
                         <span class="pi pi-box"></span>
                         <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4"

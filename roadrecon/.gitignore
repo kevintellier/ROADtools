@@ -1,3 +1,4 @@
 **/.roadtools_auth
 **/roadrecon.db
+venv/**
 caps.html

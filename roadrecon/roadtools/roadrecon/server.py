@@ -223,13 +223,11 @@ def query_all_items(request,schema,model,fields):
     query = db.session.query(model)
     
     if search:
-        print(search,file=sys.stderr)
         # For now only search on the userPrincipalName and displayName fields, others will be added with advanced filtering
         #filter = build_dynamic_filter(user_schema, search)
         filters = []
         for field in fields:
             filters.append(getattr(model,field).like(f'%{search}%'))
-            print(getattr(model,field), file=sys.stderr)
         
         query = query.filter(or_(*filters))
 
@@ -241,7 +239,6 @@ def query_all_items(request,schema,model,fields):
         }
     else:
         all_items = query.paginate(page=page, per_page=rows)
-        print(all_items.total,file=sys.stderr)
         result = {
             'items':schema.dump(all_items),
             'total':all_items.total
@@ -289,41 +286,76 @@ def get_policies():
                     applications = conditions['Applications']
                     for key in applications.keys():
                         resolved = []
-                        for app in applications[key][0]['Applications']:
-                            if app == "All":
-                                resolved.append({
-                                    'displayName':'All',
-                                    'objectId':'None'
-                                })
-                            # If its an appId (UUID)
-                            elif len(app) == 36:
-                                application = db.session.query(ServicePrincipal).filter(ServicePrincipal.appId == app).first()
-                                if application is not None:
+                        for (index, object_type) in enumerate(applications[key]):
+                            for app in applications[key][index]['Applications']:
+                                if app == "All":
                                     resolved.append({
-                                        'displayName': application.displayName,
-                                        'objectId': app
+                                        'displayName':'All',
+                                        'objectId':'None'
                                     })
+                                # If its an appId (UUID)
+                                elif len(app) == 36:
+                                    application = db.session.query(ServicePrincipal).filter(ServicePrincipal.appId == app).first()
+                                    if application is not None:
+                                        resolved.append({
+                                            'displayName': application.displayName,
+                                            'objectId': app
+                                        })
+                                    else:
+                                        resolved.append({
+                                            'displayName': app,
+                                            'objectId': app
+                                        })
+                                # Already resolved, just pass
                                 else:
                                     resolved.append({
-                                        'displayName': app,
-                                        'objectId': app
+                                        'displayName':app,
+                                        'objectId':'None'
                                     })
-                            # Already resolved, just pass
-                            else:
-                                resolved.append({
-                                    'displayName':app,
-                                    'objectId':'None'
-                                })
-                        applications[key][0]['Applications'] = resolved
+                            applications[key][index]['Applications'] = resolved
+                if 'ServicePrincipals' in conditions:
+                    serviceprincipals = conditions['ServicePrincipals']
+                    for key in serviceprincipals.keys():
+                        resolved = []
+                        for (index, object_type) in enumerate(serviceprincipals[key]):
+                            for sp in serviceprincipals[key][index]['ServicePrincipals']:
+                                if sp == "All":
+                                    resolved.append({
+                                        'displayName':'All',
+                                        'objectId':'None'
+                                    })
+                                # If its an objectId (UUID)
+                                elif len(sp) == 36:
+                                    serviceprincipal = db.session.query(ServicePrincipal).filter(ServicePrincipal.objectId == sp).first()
+                                    if group is not None:
+                                        resolved.append({
+                                            'displayName': serviceprincipal.displayName,
+                                            'objectId': sp
+                                        })
+                                    else:
+                                        resolved.append({
+                                            'displayName': sp,
+                                            'objectId': sp
+                                        })
+                                elif sp == "None":
+                                    pass
+                                # Already resolved, just pass
+                                else:
+                                    resolved.append({
+                                        'displayName': sp,
+                                        'objectId':'None'
+                                    })
+                            serviceprincipals[key][index]['ServicePrincipals'] = resolved
                 if 'Users' in conditions:
                     users = conditions['Users']
                     for key in users.keys():
-                        if len(users[key]) > 1:
-                            print(users[key],file=sys.stderr)
                         for (index, object_type) in enumerate(users[key]):
                             if 'Users' in object_type:
                                 resolved = []
                                 for usr in users[key][index]['Users']:
+                                    if usr == 'None':
+                                        users[key][index] = users[key][index].pop('Users')
+                                        break
                                     if usr == "All":
                                         resolved.append({
                                             'displayName':'All',
@@ -339,7 +371,7 @@ def get_policies():
                                             })
                                         else:
                                             resolved.append({
-                                                'displayName': 'usr',
+                                                'displayName': usr,
                                                 'objectId': usr
                                             })
                                     # Already resolved, just pass
@@ -348,7 +380,8 @@ def get_policies():
                                             'displayName': usr,
                                             'objectId':'None'
                                         })
-                                users[key][index]['Users'] = resolved
+                                if len(resolved) > 0:
+                                    users[key][index]['Users'] = resolved
                             if 'Groups' in object_type:
                                 resolved = []
                                 for grp in users[key][index]['Groups']:
@@ -370,6 +403,8 @@ def get_policies():
                                                 'displayName': grp,
                                                 'objectId': grp
                                             })
+                                    elif grp == "None":
+                                        pass
                                     # Already resolved, just pass
                                     else:
                                         resolved.append({
@@ -377,6 +412,15 @@ def get_policies():
                                             'objectId':'None'
                                         })
                                 users[key][index]['Groups'] = resolved
+                    #Cleaning up data from DB
+                    keys_to_remove = []
+                    for key, value in users.items():
+                        if isinstance(value, list) and all(isinstance(item, list) and item == ["None"] for item in value):
+                            keys_to_remove.append(key)
+                    for key in keys_to_remove:
+                        del users[key]
+                    if not users:
+                        del conditions['Users']
     return jsonify(results)
 
 @app.route("/api/devices", methods=["GET"])
