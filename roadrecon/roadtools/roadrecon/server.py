@@ -274,7 +274,7 @@ def user_detail(id):
 
 @app.route("/api/policies", methods=["GET"])
 def get_policies():
-    all_policies = db.session.query(Policy).all()
+    all_policies = db.session.query(Policy).order_by(Policy.displayName.asc()).all()
     results = policies_schema.dump(all_policies)
 
     for policy in results:
@@ -327,7 +327,7 @@ def get_policies():
                                 # If its an objectId (UUID)
                                 elif len(sp) == 36:
                                     serviceprincipal = db.session.query(ServicePrincipal).filter(ServicePrincipal.objectId == sp).first()
-                                    if group is not None:
+                                    if serviceprincipal is not None:
                                         resolved.append({
                                             'displayName': serviceprincipal.displayName,
                                             'objectId': sp
