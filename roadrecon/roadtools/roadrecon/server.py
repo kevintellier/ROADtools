@@ -14,6 +14,9 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.pool import _ConnectionRecord
 import mimetypes
 import json
+import zlib
+import base64
+from html import escape
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -201,6 +204,55 @@ serviceprincipals_schema = ServicePrincipalsSchema(many=True)
 directoryroles_schema = DirectoryRolesSchema(many=True)
 administrativeunits_schema = AdministrativeUnitsSchema(many=True)
 
+
+def _translate_locations(locs):
+    policies = db.session.query(Policy).filter(Policy.policyType == 6).all()
+    out = []
+    # Not sure if there can be multiple
+    for policy in policies:
+        for pdetail in policy.policyDetail:
+            detaildata = json.loads(pdetail)
+            if 'KnownNetworkPolicies' in detaildata and detaildata['KnownNetworkPolicies']['NetworkId'] in locs:
+                out.append(detaildata['KnownNetworkPolicies']['NetworkName'])
+    # New format
+    for loc in locs:
+        policies = db.session.query(Policy).filter(Policy.policyType == 6, Policy.policyIdentifier == loc).all()
+        for policy in policies:
+            out.append(policy.displayName)
+    return out
+
+def parse_compressed_cidr(detail):
+    if not 'CompressedCidrIpRanges' in detail:
+            return ''
+    compressed = detail['CompressedCidrIpRanges']
+    b = base64.b64decode(compressed)
+    cstr = zlib.decompress(b, -zlib.MAX_WBITS)
+    decoded_cidrs = escape(cstr.decode()).split(",")
+    return decoded_cidrs
+
+def parse_associated_policies(location_object, is_trusted_location,condition_policy_list):
+    found_pols = []
+
+    for pol in condition_policy_list:
+        if not pol.policyDetail:
+            continue
+        parsed = json.loads(pol.policyDetail[0])
+        if not parsed.get('Conditions') or not parsed.get('Conditions').get('Locations'):
+            continue
+
+        cloc = parsed.get('Conditions').get('Locations')
+        incl = cloc.get('Include') or []
+        excl = cloc.get('Exclude') or []
+        for i in incl:
+            if location_object in i.get('Locations') or (is_trusted_location and "AllTrusted" in i.get('Locations')):
+                found_pols.append(pol.displayName)
+
+        for i in excl:
+            if location_object in i.get('Locations') or (is_trusted_location and "AllTrusted" in i.get('Locations')):
+                found_pols.append(pol.displayName)
+
+    return found_pols
+
 # Function to build a dynamic filter
 def build_dynamic_filter(schema, search_string):
     search_string = f"%{search_string}%"  # SQL wildcard for partial match
@@ -274,8 +326,8 @@ def user_detail(id):
 
 @app.route("/api/policies", methods=["GET"])
 def get_policies():
-    all_policies = db.session.query(Policy).order_by(Policy.displayName.asc()).all()
-    results = policies_schema.dump(all_policies)
+    policies = db.session.query(Policy).filter(or_(Policy.policyType == 18,Policy.policyType == 6)).order_by(Policy.displayName.asc()).all()
+    results = policies_schema.dump(policies)
 
     for policy in results:
         if policy['policyType'] == 18:
@@ -412,6 +464,36 @@ def get_policies():
                                             'objectId':'None'
                                         })
                                 users[key][index]['Groups'] = resolved
+                            if 'Roles' in object_type:
+                                resolved = []
+                                for rle in users[key][index]['Roles']:
+                                    if rle == "All":
+                                        resolved.append({
+                                            'displayName':'All',
+                                            'objectId':'None'
+                                        })
+                                    # If its an appId (UUID)
+                                    elif len(rle) == 36:
+                                        role = db.session.query(RoleDefinition).filter(RoleDefinition.objectId == rle).first()
+                                        if role is not None:
+                                            resolved.append({
+                                                'displayName': role.displayName,
+                                                'objectId': rle
+                                            })
+                                        else:
+                                            resolved.append({
+                                                'displayName': rle,
+                                                'objectId': rle
+                                            })
+                                    elif rle == "None":
+                                        pass
+                                    # Already resolved, just pass
+                                    else:
+                                        resolved.append({
+                                            'displayName': rle,
+                                            'objectId':'None'
+                                        })
+                                users[key][index]['Roles'] = resolved
                     #Cleaning up data from DB
                     keys_to_remove = []
                     for key, value in users.items():
@@ -421,6 +503,42 @@ def get_policies():
                         del users[key]
                     if not users:
                         del conditions['Users']
+                if 'Locations' in conditions:
+                    locations = conditions['Locations']
+                    for key in locations.keys():
+                        for (index, object_type) in enumerate(locations[key]):
+                            if "All" not in object_type['Locations']:
+                                translated = _translate_locations(object_type['Locations'])
+                            else:
+                                translated = object_type['Locations']
+                        conditions['Locations'][key] = translated
+        elif policy['policyType'] == 6:
+            policy['policyDetail'] = json.loads(policy['policyDetail'][0])
+
+            detail = None
+            oldpolicy = False
+
+            if 'KnownNetworkPolicies' in policy['policyDetail']:
+                    detail = policy['policyDetail']['KnownNetworkPolicies']
+                    oldpolicy = True
+            else:
+                detail = policy['policyDetail']
+            if not oldpolicy:
+                policy['trusted'] = ("trusted" in detail.get("Categories","") if detail.get("Categories") else False)
+                policy['appliestounknowncountry'] = str(detail.get("ApplyToUnknownCountry")) if detail.get("ApplyToUnknownCountry") is not None else False
+                policy['ipranges'] = ",".join(parse_compressed_cidr(detail))
+                policy['categories'] = ",".join(detail.get("Categories")) if detail.get("Categories") is not None else ""
+                policy['associated_policies'] = ",".join(parse_associated_policies(policy['policyIdentifier'],policy['trusted'],policies))
+                policy['country_codes'] = ",".join(detail.get("CountryIsoCodes")) if detail.get("CountryIsoCodes") else None
+            else:
+                policy['name'] = detail.get("NetworkName")
+                policy['trusted'] = ("trusted" in detail.get("Categories","") if detail.get("Categories") else False)
+                policy['appliestounknowncountry'] = str(detail.get("ApplyToUnknownCountry")) if detail.get("ApplyToUnknownCountry") is not None else False
+                policy['ipranges'] = ",".join(detail.get('CidrIpRanges')) if detail.get("CidrIpRanges") else ""
+                policy['categories'] = ", ".join(detail.get("Categories")) if detail.get("Categories") is not None else ""
+                policy['associated_policies'] = ",".join(parse_associated_policies(detail.get('NetworkId'),policy['trusted'],policies))
+                policy['country_codes'] =  ",".join(detail.get("CountryIsoCodes")) if detail.get("CountryIsoCodes") else None
+
     return jsonify(results)
 
 @app.route("/api/devices", methods=["GET"])

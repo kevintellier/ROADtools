@@ -17,7 +17,7 @@
           <template v-for="(policy, index) in policies">
             <AccordionPanel :value="String(index)">
               <AccordionHeader>
-                <span class="flex items-center gap-2 w-full">
+                <span :ref="policy.displayName" class="flex items-center gap-2 w-full">
                   <Tag :severity="policy.policyDetail.State == 'Enabled' ? 'success' :
                     policy.policyDetail.State == 'Disabled' ? 'danger' :
                       'info'" :value="policy.policyDetail.State">
@@ -55,7 +55,21 @@
                                     <template v-if="index == 'GuestsOrExternalUsers'">
                                       <p>{{index}}:</p>
                                       <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
-                                        <p>{{ objectType }}</p>
+                                        <p>{{objectType}}</p>
+                                      </ul>
+                                    </template>
+                                    <template v-else-if="index == 'Users'">
+                                      <p>{{index}}:</p>
+                                      <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                        <a v-if="objectType.displayName != 'All'" class="hover:underline" :href="'/User/'+objectType.objectId">{{ objectType.displayName }}</a>
+                                        <p v-else>{{ objectType.displayName }}</p>
+                                      </ul>
+                                    </template>
+                                    <template v-else-if="index == 'Groups'">
+                                      <p>{{index}}:</p>
+                                      <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                        <a v-if="objectType.displayName != 'All'" class="hover:underline" :href="'/Group/'+objectType.objectId">{{ objectType.displayName }}</a>
+                                        <p v-else>{{ objectType.displayName }}</p>
                                       </ul>
                                     </template>
                                     <template v-else>
@@ -84,6 +98,20 @@
                                       <p>{{index}}:</p>
                                       <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                         <p>{{ objectType }}</p>
+                                      </ul>
+                                    </template>
+                                    <template v-else-if="index == 'Users'">
+                                      <p>{{index}}:</p>
+                                      <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                        <a v-if="objectType.displayName != 'All'" class="hover:underline" :href="'/User/'+objectType.objectId">{{ objectType.displayName }}</a>
+                                        <p v-else>{{ objectType.displayName }}</p>
+                                      </ul>
+                                    </template>
+                                    <template v-else-if="index == 'Groups'">
+                                      <p>{{index}}:</p>
+                                      <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                        <a v-if="objectType.displayName != 'All'" class="hover:underline" :href="'/Group/'+objectType.objectId">{{ objectType.displayName }}</a>
+                                        <p v-else>{{ objectType.displayName }}</p>
                                       </ul>
                                     </template>
                                     <template v-else>
@@ -116,7 +144,8 @@
                                   <li v-for="element,index in item">
                                     <p>{{index}}:</p>
                                     <ul v-for="objectType in element" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
-                                      <p>{{ objectType.displayName }}</p>
+                                      <a v-if="objectType.displayName != 'All'" class="hover:underline" :href="'/ServicePrincipal/'+objectType.objectId">{{ objectType.displayName }}</a>
+                                      <p v-else>{{ objectType.displayName }}</p>
                                     </ul>
                                   </li>
                                 </ul>
@@ -161,7 +190,7 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.Applications.Include[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="element == 'All'">All Applications</p>
+                                    <a v-if="element.displayName != 'All'" class="hover:underline" :href="'/Application/'+element.objectId">{{ element.displayName }}</a>
                                     <p v-else>{{ element.displayName }}</p>
                                   </li>
                                 </ul>
@@ -179,7 +208,7 @@
                                 <ul v-for="(item, index) in policy.policyDetail.Conditions.Applications.Exclude[0]"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="element in item">
-                                    <p v-if="element == 'All'">All Applications</p>
+                                    <a v-if="element.displayName != 'All'" class="hover:underline" :href="'/Application/'+element.objectId">{{ element.displayName }}</a>
                                     <p v-else>{{ element.displayName }}</p>
                                   </li>
                                 </ul>
@@ -287,7 +316,7 @@
                                 </div>
                                 <ul v-for="condition in policy.policyDetail.Conditions.Devices.Include" class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
                                   <li v-for="item,index in condition">
-                                    <p v-if="index == 'DeviceRule'">Rule : {{ item }}</p>
+                                    <p v-if="index == 'DeviceRule'">Rule : <i>{{item }}</i></p>
                                     <p v-if="index == 'DeviceStates'">Device State: {{ item }}</p>
                                   </li>
                                 </ul>
@@ -326,12 +355,10 @@
                                 <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
                                   Including
                                 </div>
-                                <ul v-for="(item, index) in policy.policyDetail.Conditions.Locations.Include[0]"
+                                <ul v-for="(item, index) in policy.policyDetail.Conditions.Locations.Include"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
-                                  <li v-for="element in item">
-                                    <p v-if="element == 'All'">All Locations</p>
-                                    <p v-else>{{ element }}</p>
-                                  </li>
+                                  <a v-if="item.displayName != 'All'" class="hover:underline" @click="goto(item)">{{ item }}</a>
+                                  <p v-else>{{ item }}</p>
                                 </ul>
                               </div>
                             </div>
@@ -344,12 +371,9 @@
                                 <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
                                   Excluding
                                 </div>
-                                <ul v-for="(item, index) in policy.policyDetail.Conditions.Locations.Exclude[0]"
+                                <ul v-for="(item, index) in policy.policyDetail.Conditions.Locations.Exclude"
                                   class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
-                                  <li v-for="element in item">
-                                    <p v-if="element == 'All'">All Locations</p>
-                                    <p v-else>{{ element }}</p>
-                                  </li>
+                                  <a class="hover:underline" @click="goto(item)">{{ item }}</a>
                                 </ul>
                               </div>
                             </div>
@@ -421,6 +445,102 @@
             <p>No policies</p>
           </template>
         </Card>
+
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Named Locations</h1>
+
+        <Accordion multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="namedLocations">
+          <template v-for="(location, index) in namedLocations">
+            <AccordionPanel :value="String(index)">
+              <AccordionHeader>
+                <span :ref="location.displayName">
+                  {{ location.displayName }}
+                  <Tag v-if="location.trusted" severity="success" class="mx-1">Trusted</Tag>
+                  <Tag v-if="location.appliestounknowncountry" severity="info" class="mx-1">Applies to unknown country</Tag>
+                </span>
+              </AccordionHeader>
+              <AccordionContent v-if="location.policyDetail">
+                <Tabs value="0" class="rounded">
+                  <TabList>
+                    <Tab value="0">
+                      Overview
+                    </Tab>
+                    <Tab value="1">
+                      Raw
+                    </Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel value="0">
+                      <div v-if="location.ipranges != ''">
+                        <span class="pi pi-asterisk"></span>
+                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Ip Ranges</span>
+                        <div class="flex flex-wrap">
+                          <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <ul v-for="item in location.ipranges"
+                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li>
+                                    {{ item }}
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-if="location.associatedpolicies">
+                        <span class="pi pi-link"></span>
+                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Associated Policies</span>
+                        <div class="flex flex-wrap">
+                          <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <ul v-for="item in location.associatedpolicies"
+                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li>
+                                    <a class="hover:underline" @click="goto(item)">{{ item }}</a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-if="location.policyDetail.CountryIsoCodes">
+                        <span class="pi pi-flag"></span>
+                        <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Country ISO codes</span>
+                        <div class="flex flex-wrap">
+                          <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl">
+                            <div
+                              class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
+                              <div class="overview-info">
+                                <ul v-for="item in location.policyDetail.CountryIsoCodes"
+                                  class="m-0 text-surface-500 dark:text-surface-300 font-semibold ml-4">
+                                  <li>
+                                    {{ item }}
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </TabPanel>
+                    <TabPanel value="1">
+                      <pre id="code" class="text-gray-300">
+                        <code>
+                          {{ location.raw }}
+                        </code>
+                      </pre>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
+              </AccordionContent>
+            </AccordionPanel>
+          </template>
+        </Accordion>
       </div>
       <div class="grid gap-6 rounded-3xl overflow-auto" v-else>
         <h1 class="text-lg">Loading...</h1>
@@ -476,6 +596,7 @@ export default {
   data() {
     return {
       policies: [],
+      namedLocations: [],
       columns: [
         { field: 'appliesTo', header: 'Applies to' },
         { field: 'applications', header: 'Applications' },
@@ -504,7 +625,20 @@ export default {
               raw: JSON.parse(JSON.stringify(response.data[i],null,2))
             })
           }
+          else if (response.data[i].policyType == 6){
+            this.namedLocations.push({
+              displayName: response.data[i].displayName,
+              policyDetail: response.data[i].policyDetail,
+              trusted: response.data[i].trusted,
+              appliestounknowncountry: response.data[i].appliestounknowncountry,
+              objectId: response.data[i].objectId,
+              associatedpolicies: response.data[i].associated_policies.split(","),
+              ipranges: response.data[i].ipranges.split(","),
+              raw: JSON.parse(JSON.stringify(response.data[i],null,2))
+            })
+          }
         }
+        console.log(this.policies)
       }).finally(()=>{
         this.loading = false
       })
@@ -523,6 +657,10 @@ export default {
         '00000000-0000-0000-0000-000000000004': 'Phishing-resistant MFA'
       }
       return built_in[guid]
+    },
+    goto(refName) {
+    	var element = this.$refs[refName];
+      element[0].scrollIntoView({ behavior: "smooth", block: "center" });
     }
   },
 }

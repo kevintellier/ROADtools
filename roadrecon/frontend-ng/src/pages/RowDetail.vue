@@ -6,8 +6,8 @@
             <div class="sm:flex sm:justify-between sm:items-center mb-8">
                 <!-- Left: Title -->
                 <div class="mb-4 sm:mb-0">
-                    <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ object.displayName }}
-                    </h1>
+                    <h1 v-if="!err" class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ object.displayName }}</h1>
+                    <h1 v-else class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ err }}</h1>
                     <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device' || object.objectType == 'ServicePrincipal') && object.accountEnabled === true"
                         severity="success" value="Enabled" />
                     <Tag v-if="(object.objectType == 'User' || object.objectType == 'Device' || object.objectType == 'ServicePrincipal') && object.accountEnabled === false"
@@ -18,7 +18,8 @@
             <div class="grid grid-cols-2 gap-4 overflow-auto rounded-3xl p-3">
                 <Card class="grid grid-cols-2 overflow-auto">
                     <template #content>
-                        <DataView :value="object">
+                        <p v-if="err">{{ err }}</p>
+                        <DataView v-else :value="object">
                             <template #list="slotProps">
                                 <Tabs value="0" class="rounded">
                                     <TabList>
@@ -37,8 +38,7 @@
                                                         :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
                                                         <div class="grid grid-rows-2 justify-items-stretch">
                                                             <div class="justify-self-start gap-2 row-span-2">
-                                                                <div class="text-xl font-black font-medium mt-2">{{
-                                                                    item.name }}</div>
+                                                                <div class="text-xl font-black font-medium mt-2">{{ item.name }}</div>
                                                             </div>
                                                             <template v-if="Array.isArray(item.value)">
                                                                 <div class="justify-self-start">
@@ -140,6 +140,7 @@ export default {
             activeTabItems: [],
             name: "User detail",
             rawObject: null,
+            err: null,
             columns: {
                 devices: [
                     { field: 'displayName', header: 'Name' },
@@ -364,8 +365,8 @@ export default {
                             value: this.object.objectId,
                         },
                         {
-                            name: "Can be assigned to roles",
-                            value: this.object.lastPasswordChangeDateTime,
+                            name: "Can be assigned to roles ?",
+                            value: this.object.isAssignableToRole ? "Yes" : "No",
                         },
                         {
                             name: "Created",
@@ -607,6 +608,8 @@ export default {
                 this.object.nbItems = 0
 
                 for (var i = 0; i < this.object.tabItems.length; i++) {
+                    //TODO fix error here for devices
+                    console.log(this.object[this.object.tabItems])
                     if (this.object[this.object.tabItems[i].attribute].length > 0) {
                         this.activeTabItems.push(this.object.tabItems[i])
                     }
@@ -614,8 +617,23 @@ export default {
                 console.log(this.object.activeTabItems)
             })
             .catch(error => {
-                console.log(error);
-            });
+                console.log(this.err)
+                if(error.status == 404){
+                    this.err="User not found"
+                    console.log(this.err)
+                    return
+                }
+                else if(error.status == 500){
+                    this.err="Unknown object"
+                    console.log(this.err)
+                    return
+                }
+                else if(error.status != 200){
+                    this.err="Unknown error"
+                    console.log(error)
+                    return
+                }
+            })
     },
     methods: {
         processTabItems() {
