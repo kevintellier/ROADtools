@@ -23,7 +23,7 @@
                   </span>
                 </AccordionHeader>
                 <AccordionContent>
-                  <ObjectTable :columns="columns" :values="directoryRole.assignments" :filterFields="filterFields" :filters="filters" />
+                  <ObjectTable :columns="columns" :values="directoryRole.assignments" :filterFields="filterFields" :filters="filters" :lazy="false" />
                 </AccordionContent>
             </AccordionPanel>
           </template>
