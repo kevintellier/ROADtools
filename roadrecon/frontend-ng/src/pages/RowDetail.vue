@@ -87,8 +87,13 @@
                             <TabPanels>
                                 <template v-for="(item, tabIndex) in activeTabItems" :key="item.attribute">
                                     <TabPanel :value="String(tabIndex)" v-if="object[item.attribute].length">
-                                        <ObjectTable :columns="item.columns" :values="object[item.attribute]"
-                                            :filterFields="item.filterFields" :filters="filters" />
+                                        <ObjectTable 
+                                            :columns="item.columns" 
+                                            :values="object[item.attribute]"
+                                            :filterFields="item.filterFields"
+                                            :filters
+                                            :lazy="false"
+                                        />
                                     </TabPanel>
                                 </template>
                             </TabPanels>
@@ -179,6 +184,7 @@ export default {
         };
     },
     mounted() {
+        this.fetchData({page:1,rows:50})
         const objectId = this.$route.params.objectId;
         const objectType = this.$route.params.objectType;
 
@@ -630,13 +636,32 @@ export default {
                 }
             })
     },
+    methods: {
+        fetchData(params) {
+            this.loading = true
+            axios
+                .get(`/api/users`,{params:params})
+                .then(response => {
+                    this.users=response.data.items;
+                    this.totalRecords=response.data.total;
+                    
+                    for(var i=0;i<this.users.length;i++){
+                    this.users[i].accountEnabled = this.users[i].accountEnabled ? "True" : "False"
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+            })
+            .finally(() => {
+                this.loading = false;
+                });
+        },
+    },
     setup() {
-        const filters = ref({
-            global: {
-                value: null,
-                matchMode: FilterMatchMode.CONTAINS
-            },
-        });
+        const filters = ref();
+        filters.value = {
+            global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+        };
 
         return {
             filters,

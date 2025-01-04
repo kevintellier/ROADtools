@@ -6,8 +6,8 @@
     <div>
       <!-- Table -->
       <div class="overflow-x-auto">
-        <DataTable paginator :rows=rowsPerPageOptions[0] lazy="true" selectionMode="single" tableStyle="min-width: 50rem"
-          v-model:filters="filters" v-model:="filters" :value="values" :loading
+        <DataTable paginator :rows=rowsPerPageOptions[0] :lazy selectionMode="single" tableStyle="min-width: 50rem"
+          v-model:filters="filters" :value="values" :loading
           :rowsPerPageOptions :globalFilterFields="filterFields" :totalRecords
           @row-click="goToDetail" @page="pageChange">
           <template #header>
@@ -79,6 +79,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    lazy: {
+      type: Boolean,
+      required: false,
+      default: true
     },
     rowsPerPageOptions: {
       type: Array,
