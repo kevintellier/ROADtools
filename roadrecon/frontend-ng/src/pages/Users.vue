@@ -54,7 +54,7 @@ export default {
         { field: 'department', header: 'Department' },
         { field: 'lastPasswordChangeDateTime', header: 'Last password change' },
         { field: 'jobTitle', header: 'Job title' },
-        { field: 'member', header: 'User type' },
+        { field: 'userType', header: 'User type' },
       ],
       filterFields:["displayName","userPrincipalName","accountEnabled","mail","department","lastPasswordChangeDateTime","jobTitle","mobile","objectType","member"],
       filters: {
