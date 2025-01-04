@@ -33,12 +33,11 @@
                                     <TabPanels>
                                         <TabPanel value="0">
                                             <div class="flex flex-col">
-                                                <div>
-                                                    <div v-for="(item, index) in object.overviewItems" class="p-4"
-                                                        :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-                                                        <div class="grid grid-rows-2 justify-items-stretch">
+                                                <div v-for="(item, index) in object.overviewItems">
+                                                    <div v-if="item.value" class="p-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+                                                        <div v-if="item.value" class="grid grid-rows-2 justify-items-stretch">
                                                             <div class="justify-self-start gap-2 row-span-2">
-                                                                <div class="text-xl font-black font-medium mt-2">{{ item.name }}</div>
+                                                                <div class="text-xl font-black font-bold mt-2">{{ item.name }}</div>
                                                             </div>
                                                             <template v-if="Array.isArray(item.value)">
                                                                 <div class="justify-self-start">
@@ -200,7 +199,7 @@ export default {
         else if (objectType === "ServicePrincipal") {
             apiRoute = "serviceprincipals"
         }
-        else if (objectType === "AdministrativeUnits") {
+        else if (objectType === "AdministrativeUnit") {
             apiRoute = "administrativeunits"
         }
         else if (objectType === "Policy") {
@@ -472,11 +471,11 @@ export default {
                         },
                         {
                             name: "Application ID",
-                            value: this.object.applicationId,
+                            value: this.object.appid,
                         },
                         {
                             name: "Publisher",
-                            value: this.object.publisher,
+                            value: this.object.ownerServicePrincipals.publisherName,
                         },
                         {
                             name: "Homepage",
@@ -484,7 +483,7 @@ export default {
                         },
                         {
                             name: "Service Principal",
-                            value: this.object.ownerServicePrincipals[0],
+                            value: this.object.ownerServicePrincipals[0].displayName,
                         },
                     ];
                 }
@@ -604,17 +603,13 @@ export default {
                     ];
                 }
 
-
                 this.object.nbItems = 0
 
                 for (var i = 0; i < this.object.tabItems.length; i++) {
-                    //TODO fix error here for devices
-                    console.log(this.object[this.object.tabItems])
-                    if (this.object[this.object.tabItems[i].attribute].length > 0) {
+                    if (this.object[this.object.tabItems[i].attribute] != undefined && this.object[this.object.tabItems[i].attribute].length > 0) {
                         this.activeTabItems.push(this.object.tabItems[i])
                     }
                 }
-                console.log(this.object.activeTabItems)
             })
             .catch(error => {
                 console.log(this.err)
@@ -634,14 +629,6 @@ export default {
                     return
                 }
             })
-    },
-    methods: {
-        processTabItems() {
-            if (this.object && this.object.tabItems) {
-                console.log('Now processing tab items:', this.object.tabItems);
-                // Do whatever you need to with this.object.tabItems here
-            }
-        }
     },
     setup() {
         const filters = ref({
