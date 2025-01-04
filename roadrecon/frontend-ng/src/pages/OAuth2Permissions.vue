@@ -21,6 +21,7 @@
         :loading
         noSearch
         @pageChange="fetchData"
+        @pageSort="fetchData"
         />
       </div>
     </div>
@@ -44,14 +45,14 @@ export default {
     return {
       oauth2permissions: [],
       columns: [
-        { field: 'type', header: 'Approval type' },
+        { field: 'consentType', header: 'Approval type' },
         { field: 'userdisplayname', header: 'Principal Name' },
         { field: 'sourceapplication', header: 'Source Application (permissions recipient)' },
         { field: 'targetapplication', header: 'Target Application (permission to access)' },
         { field: 'scope', header: 'Scope (permissions)' },
         { field: 'expiry', header: 'Expiry' },
       ],
-      filterFields:["type","userdisplayname","sourceapplication","targetapplication","scope","expiry","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
+      filterFields:["consentType","userdisplayname","sourceapplication","targetapplication","scope","expiry","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },

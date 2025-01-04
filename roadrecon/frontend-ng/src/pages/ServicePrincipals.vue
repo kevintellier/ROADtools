@@ -20,7 +20,9 @@
         :totalRecords
         :loading
         @pageChange="fetchData"
-        @inputTextUpdated="fetchData"/>
+        @inputTextUpdated="fetchData"
+        @pageSort="fetchData"
+        />
       </div>
     </div>
   </main>
@@ -47,7 +49,7 @@ export default {
       serviceprincipals: [],
       columns: [
         { field: 'accountEnabled', header: 'Enabled' },
-        { field: 'appDisplayName', header: 'Name' },
+        { field: 'displayName', header: 'Name' },
         { field: 'servicePrincipalType', header: 'Type' },
         { field: 'publisherName', header: 'Publisher' },
         { field: 'microsoftFirstParty', header: 'Microsoft app' },
@@ -57,7 +59,7 @@ export default {
         { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
         { field: 'ownerUsers', header: 'Custom owner' },
       ],
-      filterFields:["accountEnabled","appDisplayName","servicePrincipalType","publisherName","microsoftFirstParty","passwordCredentials","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
+      filterFields:["accountEnabled","displayName","servicePrincipalType","publisherName","microsoftFirstParty","passwordCredentials","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
@@ -66,7 +68,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchData({page:1,rows:50})
+    this.fetchData({page:1,rows:50,sortedField:"displayName",sortOrder:-1})
   },
   methods: {
     fetchData(params) {

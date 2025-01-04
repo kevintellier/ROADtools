@@ -20,7 +20,9 @@
         :totalRecords
         :loading
         @pageChange="fetchData"
-        @inputTextUpdated="fetchData"/>
+        @inputTextUpdated="fetchData"
+        @pageSort="fetchData"
+        />
       </div>
     </div>
   </main>
@@ -43,13 +45,13 @@ export default {
     return {
       approles: [],
       columns: [
-        { field: 'pname', header: 'Principal Name' },
-        { field: 'objectType', header: 'Principal Type' },
-        { field: 'app', header: 'Application' },
+        { field: 'principalDisplayName', header: 'Principal Name' },
+        { field: 'principalType', header: 'Principal Type' },
+        { field: 'resourceDisplayName', header: 'Application' },
         { field: 'value', header: 'Role' },
         { field: 'desc', header: 'Description' },
       ],
-      filterFields:["pname","objectType","app","value","desc"],
+      filterFields:["principalDisplayName","principalType","resourceDisplayName","value","desc"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
@@ -58,7 +60,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchData({page:1,rows:50})
+    this.fetchData({page:1,rows:50,sortedField:"principalDisplayName",sortOrder:-1})
   },
   methods: {
     fetchData(params) {

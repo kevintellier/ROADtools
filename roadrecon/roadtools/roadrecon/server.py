@@ -9,7 +9,7 @@ from roadtools.roadlib.metadef.database import User, Policy, JSON, Group, Direct
 import os
 import logging
 import argparse
-from sqlalchemy import func, and_, or_, select
+from sqlalchemy import func, and_, or_, select, desc, asc
 from sqlalchemy.event import listens_for
 from sqlalchemy.pool import _ConnectionRecord
 import mimetypes
@@ -271,6 +271,8 @@ def query_all_items(request,schema,model,fields):
     page = request.args.get('page', type=int)
     rows = request.args.get('rows', type=int)
     search = request.args.get('search', type=str)
+    sortedField = request.args.get('sortedField', type=str)
+    sortOrder = request.args.get('sortOrder', type=int)
 
     query = db.session.query(model)
     
@@ -282,20 +284,25 @@ def query_all_items(request,schema,model,fields):
             filters.append(getattr(model,field).like(f'%{search}%'))
         
         query = query.filter(or_(*filters))
+    
+    if sortedField:
+        if sortOrder == 1:
+            query = query.order_by(getattr(model,sortedField).desc())
+        elif sortOrder == -1:
+            query = query.order_by(getattr(model,sortedField).asc())
 
     if page is None and rows is None:
         all_items = query.all()
         result = {
-            'items':schema.dump(all_items),
+            'items': schema.dump(all_items),
             'total': None
         }
     else:
         all_items = query.paginate(page=page, per_page=rows)
         result = {
-            'items':schema.dump(all_items),
-            'total':all_items.total
+            'items': schema.dump(all_items),
+            'total': all_items.total
         }
-
     return jsonify(result)
 
 @app.route("/")
@@ -739,9 +746,9 @@ def process_approle(approles, ar):
         sp = db.session.get(Group, ar.principalId)
     if ar.id == '00000000-0000-0000-0000-000000000000':
         approles.append({'objectId':sp.objectId,
-                         'objectType':ar.principalType,
-                         'pname':sp.displayName,
-                         'app':ar.resourceDisplayName,
+                         'principalType':ar.principalType,
+                         'principalDisplayName':sp.displayName,
+                         'resourceDisplayName':ar.resourceDisplayName,
                          'value':'Default',
                          'desc':'Default Role',
                          'spid':ar.resourceId,
@@ -750,9 +757,9 @@ def process_approle(approles, ar):
         for approle in rsp.appRoles:
             if approle['id'] == ar.id:
                 approles.append({'objectId':sp.objectId,
-                                 'objectType':ar.principalType,
-                                 'pname':sp.displayName,
-                                 'app':ar.resourceDisplayName,
+                                 'principalType':ar.principalType,
+                                 'principalDisplayName':sp.displayName,
+                                 'resourceDisplayName':ar.resourceDisplayName,
                                  'value':approle['value'],
                                  'desc':approle['displayName'],
                                  'spid':ar.resourceId,
@@ -763,6 +770,8 @@ def get_approles():
     page = request.args.get('page', type=int)
     rows = request.args.get('rows', type=int)
     search = request.args.get('search', type=str)
+    sortedField = request.args.get('sortedField', type=str)
+    sortOrder = request.args.get('sortOrder', type=int)
 
     approles = []
     query = db.session.query(AppRoleAssignment)
@@ -774,6 +783,12 @@ def get_approles():
         filters.append(AppRoleAssignment.principalDisplayName.like(f'%{search}%'))
         
         query = query.filter(or_(*filters))
+    
+    if sortedField:
+        if sortOrder == 1:
+            query = query.order_by(getattr(AppRoleAssignment,sortedField).desc())
+        elif sortOrder == -1:
+            query = query.order_by(getattr(AppRoleAssignment,sortedField).asc())
 
     if page is None and rows is None:
         result = query.all()
@@ -806,6 +821,8 @@ def get_oauth2permissions():
     page = request.args.get('page', type=int)
     rows = request.args.get('rows', type=int)
     search = request.args.get('search', type=str)
+    sortedField = request.args.get('sortedField', type=str)
+    sortOrder = request.args.get('sortOrder', type=int)
 
     query = db.session.query(OAuth2PermissionGrant)
 
@@ -816,6 +833,12 @@ def get_oauth2permissions():
         filters.append(ServicePrincipal.displayName.like(f'%{search}%'))
         
         query = query.filter(or_(*filters))
+
+    if sortedField:
+        if sortOrder == 1:
+            query = query.order_by(getattr(OAuth2PermissionGrant,sortedField).desc())
+        elif sortOrder == -1:
+            query = query.order_by(getattr(OAuth2PermissionGrant,sortedField).asc())
 
     if page is None and rows is None:
         result = query.all()
@@ -828,12 +851,12 @@ def get_oauth2permissions():
         grant = {}
         rsp = db.session.get(ServicePrincipal, permgrant.clientId)
         if permgrant.consentType == 'Principal':
-            grant['type'] = 'user'
+            grant['consentType'] = 'user'
             user = db.session.get(User, permgrant.principalId)
             grant['userid'] = user.objectId
             grant['userdisplayname'] = user.displayName
         else:
-            grant['type'] = 'all'
+            grant['consentType'] = 'all'
             grant['userid'] = None
             grant['userdisplayname'] = None
         targetapp = db.session.get(ServicePrincipal, permgrant.resourceId)

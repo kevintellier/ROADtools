@@ -20,7 +20,9 @@
         :totalRecords
         :loading
         @pageChange="fetchData"
-        @inputTextUpdated="fetchData"/>
+        @inputTextUpdated="fetchData"
+        @pageSort="fetchData"
+        />
       </div>
     </div>
   </main>
@@ -63,7 +65,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchData({page:1,rows:50})
+    this.fetchData({page:1,rows:50,sortedField:"displayName",sortOrder:-1})
   },
   methods: {
     fetchData(params) {

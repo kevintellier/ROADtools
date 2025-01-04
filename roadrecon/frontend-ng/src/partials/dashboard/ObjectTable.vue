@@ -9,7 +9,7 @@
         <DataTable paginator :rows=rowsPerPageOptions[0] :lazy selectionMode="single" tableStyle="min-width: 50rem"
           v-model:filters="filters" :value="values" :loading
           :rowsPerPageOptions :globalFilterFields="filterFields" :totalRecords
-          @row-click="goToDetail" @page="pageChange">
+          @row-click="goToDetail" @page="pageChange" @sort="sortPage">
           <template #header>
             <div class="flex">
               <IconField v-if="!noSearch">
@@ -50,7 +50,9 @@ export default {
   data(){
     return {
       page: 0,
-      rows: 50
+      rows: 50,
+      sortedField: "",
+      sortOrder: 0
     }
   },
   props: {
@@ -89,6 +91,14 @@ export default {
       type: Array,
       required: false,
       default: [50, 100, 200, 1000]
+    },
+    sortedField: {
+      type: String,
+      required: false
+    },
+    sortOrder: {
+      type: Number,
+      required: false
     }
   },
   components: {
@@ -115,14 +125,31 @@ export default {
       var params = { 
         page: this.page + 1,
         rows: this.rows,
-        search: this.filters.global.value
+        search: this.filters.global.value,
+        sortedField: this.sortedField,
+        sortOrder: this.sortOrder
       }
       this.$emit('pageChange', params)
+    },
+    sortPage(event){
+      this.sortedField = event.sortField
+      this.sortOrder = event.sortOrder
+
+      var params = { 
+        page: this.page + 1, 
+        rows: this.rows,
+        search: this.filters.global.value,
+        sortedField: this.sortedField,
+        sortOrder: this.sortOrder
+      }
+      this.$emit('pageSort', params)
     },
     inputTextUpdated(){
       var params = { 
         page: this.page + 1, 
-        rows: this.rows, 
+        rows: this.rows,
+        sortedField: this.sortedField,
+        sortOrder: this.sortOrder
       }
 
       // Limits search to 3 characters minimum for performance
