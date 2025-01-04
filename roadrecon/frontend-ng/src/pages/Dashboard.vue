@@ -105,7 +105,7 @@
               </div>
             </template>
             <template #content>
-              <ObjectTable :columns :values="tenantDomains" :filterFields :filters :totalRecords :rowsPerPageOptions="[10,25,50]" />
+              <ObjectTable :lazy="false" :columns :values="tenantDomains" :filterFields :filters :totalRecords :rowsPerPageOptions="[10,25,50]" />
             </template>
           </Card>
         </div>
