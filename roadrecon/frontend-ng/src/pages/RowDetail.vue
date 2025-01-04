@@ -34,7 +34,7 @@
                                         <TabPanel value="0">
                                             <div class="flex flex-col">
                                                 <div v-for="(item, index) in object.overviewItems">
-                                                    <div v-if="item.value" class="p-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+                                                    <div v-if="checkDisplay(item.value)" class="p-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
                                                         <div v-if="item.value" class="grid grid-rows-2 justify-items-stretch">
                                                             <div class="justify-self-start gap-2 row-span-2">
                                                                 <div class="text-xl font-black font-bold mt-2">{{ item.name }}</div>
@@ -184,7 +184,6 @@ export default {
         };
     },
     mounted() {
-        this.fetchData({page:1,rows:50})
         const objectId = this.$route.params.objectId;
         const objectType = this.$route.params.objectType;
 
@@ -486,12 +485,18 @@ export default {
                         {
                             name: "Homepage",
                             value: this.object.homepage,
-                        },
-                        {
-                            name: "Service Principal",
-                            value: this.object.ownerServicePrincipals[0].displayName,
-                        },
+                        }
                     ];
+                    
+                    if(this.object.ownerServicePrincipals.length > 0)
+                    {
+                        this.object.overviewItems.push(
+                            {
+                                name: "Service Principal",
+                                value: this.object.ownerServicePrincipals[0].displayName,
+                            }
+                        )
+                    }
                 }
                 else if (objectType === "ServicePrincipal") {
                     this.object.tabItems = [
@@ -509,9 +514,20 @@ export default {
                             ],
                         },
                         {
+                            name: "App role assignments",
+                            attribute: "appRolesAssignedTo",
+                            value: "1",
+                            filterFields: ["value", "displayName", "description", "id", "allowedMemberTypes"],
+                            columns: [
+                                { field: 'principalDisplayName', header: 'Principal Name' },
+                                { field: 'principalType', header: 'Type' },
+                                { field: 'resourceDisplayName', header: 'Ressource' },
+                            ],
+                        },
+                        {
                             name: "OAuth2 permissions (delegated permissions)",
                             attribute: "oauth2Permissions",
-                            value: "1",
+                            value: "2",
                             filterFields: ["value", "displayName", "description", "id", "allowedMemberTypes"],
                             columns: [
                                 { field: 'value', header: 'Value' },
@@ -538,13 +554,17 @@ export default {
                             value: this.object.appId,
                         },
                         {
+                            name: "Microsoft App",
+                            value: this.object.microsoftFirstParty ? "Yes" : "No",
+                        },
+                        {
                             name: "Publisher",
                             value: this.object.publisherName,
                         },
                         {
                             name: "ReplyUrls",
                             value: this.object.replyUrls,
-                        },
+                        }
                     ];
                 }
                 else if (objectType === "AdministrativeUnit") {
@@ -637,24 +657,11 @@ export default {
             })
     },
     methods: {
-        fetchData(params) {
-            this.loading = true
-            axios
-                .get(`/api/users`,{params:params})
-                .then(response => {
-                    this.users=response.data.items;
-                    this.totalRecords=response.data.total;
-                    
-                    for(var i=0;i<this.users.length;i++){
-                    this.users[i].accountEnabled = this.users[i].accountEnabled ? "True" : "False"
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-            })
-            .finally(() => {
-                this.loading = false;
-                });
+        checkDisplay(value) {
+            if (value === null || value === undefined) return false;
+            if (typeof value === 'boolean') return value;
+            if (typeof value === 'string' || Array.isArray(value)) return value.length > 0;
+            return true;
         },
     },
     setup() {
