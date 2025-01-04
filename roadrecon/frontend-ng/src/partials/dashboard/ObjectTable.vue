@@ -101,7 +101,12 @@ export default {
   },
   methods: {
     goToDetail(event) {
-      this.$router.push({ name: 'RowDetail', params: { objectId: event.data.objectId, objectType: event.data.objectType } });
+      if(event.data.principal){
+        this.$router.push({ name: 'RowDetail', params: { objectId: event.data.principal.objectId, objectType: event.data.principal.objectType } });
+      }
+      else{
+        this.$router.push({ name: 'RowDetail', params: { objectId: event.data.objectId, objectType: event.data.objectType } });
+      }
     },
     pageChange(event) {
       this.page = event.page
