@@ -51,14 +51,14 @@ export default {
       columns: [
         { field: 'displayName', header: 'Name' },
         { field: 'description', header: 'Description' },
-        { field: 'groupType', header: 'Group type' },
+        { field: 'groupTypes', header: 'Group type' },
         { field: 'source', header: 'Group source' },
         { field: 'mail', header: 'Mail' },
-        { field: 'public', header: 'Public?' },
-        { field: 'roleAssignable', header: 'Role assignable?' },
+        { field: 'isPublic', header: 'Public?' },
+        { field: 'isAssignableToRole', header: 'Role assignable?' },
         { field: 'membershipRule', header: 'Dynamic membership' }
       ],
-      filterFields:["displayName","description","groupType","source","mail","public","roleAssignable","membershipRule"],
+      filterFields:["displayName","description","groupTypes","source","mail","isPublic","isAssignableToRole","membershipRule"],
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
@@ -80,9 +80,9 @@ export default {
             
             for(var i=0;i<this.groups.length;i++){
               this.groups[i].source = this.groups[i].dirSyncEnabled ? "Synced with AD" : "Cloud-only"
-              this.groups[i].groupType = this.groups[i].groupTypes.includes("Unified") ? "Microsoft 365" : "Security"
-              this.groups[i].public = this.groups[i].isPublic ? "True" : ""
-              this.groups[i].roleAssignable = this.groups[i].isAssignableToRole ? "True" : ""
+              this.groups[i].groupTypes = this.groups[i].groupTypes.includes("Unified") ? "Microsoft 365" : "Security"
+              this.groups[i].isPublic = this.groups[i].isPublic ? "True" : "False"
+              this.groups[i].isAssignableToRole = this.groups[i].isAssignableToRole ? "True" : "False"
             }
         })
         .catch(error => {
