@@ -106,7 +106,6 @@ export default {
     }
   },
   setup(props, { emit }) {
-    console.log(Logo)
     const items = ref(routes)
 
     const trigger = ref(null)
