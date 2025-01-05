@@ -114,6 +114,9 @@ export default {
       if(event.data.principal){
         this.$router.push({ name: 'RowDetail', params: { objectId: event.data.principal.objectId, objectType: event.data.principal.objectType } });
       }
+      else if(event.data.consentType == "user"){
+        this.$router.push({ name: 'RowDetail', params: { objectId: event.data.userid, objectType: "User" } });
+      }
       else{
         this.$router.push({ name: 'RowDetail', params: { objectId: event.data.objectId, objectType: event.data.objectType } });
       }
