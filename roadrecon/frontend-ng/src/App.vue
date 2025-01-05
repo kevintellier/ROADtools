@@ -12,7 +12,6 @@
 
 <script>
 import { ref } from 'vue'
-import './charts/ChartjsConfig';
 import Sidebar from './partials/Sidebar.vue'
 import Header from './partials/Header.vue'
 import { useDark } from "@vueuse/core";
