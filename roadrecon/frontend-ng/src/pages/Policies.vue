@@ -638,11 +638,11 @@ export default {
             })
           }
         }
-        console.log(this.policies)
       }).finally(()=>{
         this.loading = false
       })
       .catch(error => {
+        console.log("Error getting policy from API:")
         console.log(error)
       })
   },

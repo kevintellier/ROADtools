@@ -91,9 +91,9 @@ export default {
                 this.directoryroles[i].assignments[j].principal.accountEnabled = this.directoryroles[i].assignments[j].principal.accountEnabled ? "Active" : ""
               }
             }
-            console.log(this.directoryroles)
         })
         .catch(error => {
+            console.log("Error getting role definitions from API:")
             console.log(error)
       })
   }
