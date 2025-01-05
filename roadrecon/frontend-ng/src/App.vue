@@ -15,6 +15,8 @@ import { ref } from 'vue'
 import './charts/ChartjsConfig';
 import Sidebar from './partials/Sidebar.vue'
 import Header from './partials/Header.vue'
+import { useDark } from "@vueuse/core";
+
 
 export default {
   name: 'App',
@@ -26,8 +28,13 @@ export default {
 
     const sidebarOpen = ref(false)
 
+    const isDark = useDark({
+      selector: 'html',
+    })
+
     return {
       sidebarOpen,
+      isDark
     }  
   }
 }
