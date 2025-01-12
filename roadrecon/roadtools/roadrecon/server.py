@@ -985,7 +985,7 @@ def main(args=None):
     if args.profile:
         from werkzeug.middleware.profiler import ProfilerMiddleware
         app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[5])
-    app.run(debug=args.debug, port=args.port)
+    app.run(debug=args.debug, host='0.0.0.0', port=args.port)
 
 if __name__ == '__main__':
     main()

@@ -2,7 +2,8 @@ services:
   frontend:
     build:
       context: frontend-ng
-    network_mode: "host"
+    ports:
+      - 5173:5173
     volumes:
       - ./frontend-ng/:/usr/src/app/
     restart: always
@@ -12,5 +13,6 @@ services:
     volumes:
       - ./:/app/
       - ./roadrecon.db:/app/roadrecon.db
-    network_mode: "host"
+    ports:
+      - 5000:5000
     restart: always

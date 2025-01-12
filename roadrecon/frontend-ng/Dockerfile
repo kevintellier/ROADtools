@@ -11,4 +11,5 @@ WORKDIR /usr/src/app
 RUN apt update
 RUN apt install -y vim
 
+EXPOSE 5173
 CMD [ "npm","run","dev"]
