@@ -1,15 +1,29 @@
-# it's a good idea to pin this, but for demo purposes we'll leave it as is
+# Build stage
 FROM node:latest AS builder
 
 COPY package*.json /usr/src/
 WORKDIR /usr/src/
-RUN npm install --include=dev
+RUN npm install
 ENV PATH /usr/src/node_modules/.bin:$PATH
-
 COPY . /usr/src/app
 WORKDIR /usr/src/app
-RUN apt update
-RUN apt install -y vim
+RUN npm run build
 
+# Development stage
+FROM node:latest AS dev
+COPY package*.json /usr/src/
+WORKDIR /usr/src/
+RUN npm install --include=dev
+ENV PATH /usr/src/node_modules/.bin:$PATH
+COPY . /usr/src/app
+WORKDIR /usr/src/app
 EXPOSE 5173
-CMD [ "npm","run","dev"]
+CMD ["npm", "run", "dev"]
+
+# Production stage
+FROM nginx:alpine AS prod
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

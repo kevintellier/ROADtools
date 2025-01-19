@@ -1,13 +1,11 @@
-# it's a good idea to pin this, but for demo purposes we'll leave it as is
-FROM debian:latest as builder
-
+FROM python:3.11-slim AS dev
 COPY . /app
-
-# automatically creates the dir and sets it as the current working dir
 WORKDIR /app
+RUN pip install -r requirements.txt
+CMD [ "python3","/app/roadtools/roadrecon/server.py","--debug" ]
 
-RUN apt update && apt install -y python3 python3-pip
-
-RUN pip3 install --break-system-packages -r requirements.txt
-
-ENTRYPOINT [ "python3","/app/roadtools/roadrecon/server.py","--debug" ]
+FROM python:3.11-slim AS prod
+COPY . /app
+WORKDIR /app
+RUN pip install -r requirements.txt
+CMD [ "python3","/app/roadtools/roadrecon/server.py" ]
