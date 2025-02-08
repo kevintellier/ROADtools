@@ -2,9 +2,9 @@ services:
   frontend:
     build:
       context: frontend-ng
-      target: prod
+      target: ${TARGET:-prod}
     ports:
-      - 5173:80
+      - 5173:5173
     volumes:
       - ./frontend-ng/:/usr/src/app/
     restart: always
@@ -13,10 +13,9 @@ services:
   backend:
     build:
       context: .
-      target: prod
+      target: ${TARGET:-prod}
     volumes:
       - ./:/app/
-      - ./roadrecon.db:/app/roadrecon.db
     ports:
       - 5000:5000
     restart: always
