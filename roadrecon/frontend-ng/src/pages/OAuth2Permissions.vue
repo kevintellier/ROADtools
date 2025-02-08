@@ -20,6 +20,7 @@
         :totalRecords
         :loading
         noSearch
+        paginatorPosition="both"
         @pageChange="fetchData"
         @pageSort="fetchData"
         />

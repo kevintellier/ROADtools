@@ -19,6 +19,7 @@
         :filters="filters" 
         :totalRecords
         :loading
+        paginatorPosition="both"
         @pageChange="fetchData"
         @inputTextUpdated="fetchData"
         @pageSort="fetchData"

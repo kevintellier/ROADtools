@@ -6,7 +6,7 @@
     <div>
       <!-- Table -->
       <div class="overflow-x-auto">
-        <DataTable paginator :rows=rowsPerPageOptions[0] :lazy selectionMode="single" tableStyle="min-width: 50rem"
+        <DataTable paginator :paginatorPosition=paginatorPosition :rows=rowsPerPageOptions[0] :lazy selectionMode="single" tableStyle="min-width: 50rem"
           v-model:filters="filters" :value="values" :loading
           :rowsPerPageOptions :globalFilterFields="filterFields" :totalRecords
           @row-click="handleRowClick" @page="pageChange" @sort="sortPage" class="selectable-text">
@@ -99,6 +99,10 @@ export default {
       default: [50, 100, 200, 1000]
     },
     sortedField: {
+      type: String,
+      required: false
+    },
+    paginatorPosition: {
       type: String,
       required: false
     },
