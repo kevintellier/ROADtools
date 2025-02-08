@@ -6,10 +6,24 @@
     <div>
       <!-- Table -->
       <div class="overflow-x-auto">
-        <DataTable paginator :paginatorPosition=paginatorPosition :rows=rowsPerPageOptions[0] :lazy selectionMode="single" tableStyle="min-width: 50rem"
-          v-model:filters="filters" :value="values" :loading
-          :rowsPerPageOptions :globalFilterFields="filterFields" :totalRecords
-          @row-click="handleRowClick" @page="pageChange" @sort="sortPage" class="selectable-text">
+        <DataTable 
+          paginator
+          resizableColumns
+          columnResizeMode="fit"
+          :paginatorPosition=paginatorPosition 
+          :rows=rowsPerPageOptions[0] 
+          :lazy selectionMode="single" 
+          tableStyle="min-width: 50rem"
+          v-model:filters="filters" 
+          :value="values" 
+          :loading
+          :rowsPerPageOptions 
+          :globalFilterFields="filterFields" 
+          :totalRecords
+          @row-click="handleRowClick" 
+          @page="pageChange" 
+          @sort="sortPage" 
+          class="selectable-text">
           <template #header>
             <div class="flex">
               <IconField v-if="!noSearch">
