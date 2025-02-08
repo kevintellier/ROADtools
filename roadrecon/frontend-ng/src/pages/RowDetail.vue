@@ -462,6 +462,25 @@ export default {
                                 { field: 'id', header: 'ID' },
                             ],
                         },
+                        {
+                            name: "Passwords",
+                            attribute: "passwordCredentials",
+                            filterFields: ["value","keyId"],
+                            columns: [
+                                { field: 'value', header: 'Value' },
+                                { field: 'keyId', header: 'Key ID' },
+                            ],
+                        },
+                        {
+                            name: "Keys",
+                            attribute: "keyCredentials",
+                            filterFields: ["type","keyId","usage"],
+                            columns: [
+                                { field: 'type', header: 'Type' },
+                                { field: 'keyId', header: 'Key ID' },
+                                { field: 'usage', header: 'Usage' },
+                            ],
+                        },
                     ];
                     this.object.overviewItems = [
                         {
