@@ -19,6 +19,7 @@
         :filters="filters" 
         :totalRecords
         :loading
+        :tagFields=tagFields
         paginatorPosition="both"
         @pageChange="fetchData"
         @inputTextUpdated="fetchData"
@@ -53,7 +54,7 @@ export default {
       columns: [
         { field: 'displayName', header: 'Name' },
         { field: 'userPrincipalName', header: 'UserPrincipalName' },
-        { field: 'accountEnabled', header: 'Enabled' },
+        { field: 'accountEnabled', header: 'Enabled', isTag: true },
         { field: 'mail', header: 'Email' },
         { field: 'department', header: 'Department' },
         { field: 'lastPasswordChangeDateTime', header: 'Last password change' },
@@ -65,7 +66,7 @@ export default {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
       totalRecords: 0,
-      loading: false
+      loading: false,
     }
   },
   mounted() {

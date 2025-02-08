@@ -149,15 +149,15 @@ export default {
             columns: {
                 devices: [
                     { field: 'displayName', header: 'Name' },
-                    { field: 'accountEnabled', header: 'Enabled' },
+                    { field: 'accountEnabled', header: 'Enabled', isTag: true },
                     { field: 'deviceManufacturer', header: 'Manufacturer' },
                     { field: 'deviceModel', header: 'Model' },
                     { field: 'deviceOSType', header: 'OS' },
                     { field: 'deviceOSVersion', header: 'OS Version' },
                     { field: 'deviceTrustType', header: 'Trust type' },
-                    { field: 'isCompliant', header: 'Compliant' },
-                    { field: 'isManaged', header: 'Managed' },
-                    { field: 'isRooted', header: 'Rooted' },
+                    { field: 'isCompliant', header: 'Compliant', isTag: true },
+                    { field: 'isManaged', header: 'Managed', isTag: true },
+                    { field: 'isRooted', header: 'Rooted', isTag: true },
                 ],
                 servicePrincipals: [
                     { field: 'displayName', header: 'Name' },
@@ -311,7 +311,7 @@ export default {
                             columns: [
                                 { field: 'displayName', header: 'Name' },
                                 { field: 'userPrincipalName', header: 'userPrincipalName' },
-                                { field: 'accountEnabled', header: 'Enabled' },
+                                { field: 'accountEnabled', header: 'Enabled', isTag: true },
                             ],
                         },
                         {
@@ -331,7 +331,7 @@ export default {
                                 { field: 'displayName', header: 'Name' },
                                 { field: 'userPrincipalName', header: 'userPrincipalName' },
                                 { field: 'userType', header: 'Type' },
-                                { field: 'accountEnabled', header: 'Enabled' },
+                                { field: 'accountEnabled', header: 'Enabled', isTag: true },
                             ],
                         },
                         {
@@ -392,7 +392,7 @@ export default {
                             columns: [
                                 { field: 'displayName', header: 'Owner' },
                                 { field: 'userPrincipalName', header: 'userPrincipalName' },
-                                { field: 'accountEnabled', header: 'Enabled' }
+                                { field: 'accountEnabled', header: 'Enabled', isTag: true }
                             ],
                         },
                         {
@@ -538,6 +538,17 @@ export default {
                                 { field: 'adminConsentDescription', header: 'Admin Consent Description' },
                                 { field: 'id', header: 'Admin Consent Description' },
                                 { field: 'type', header: 'Allowed types' },
+                            ],
+                        },
+                        {
+                            name: "Owner",
+                            attribute: "ownerUsers",
+                            value: "3",
+                            filterFields: ["value", "displayName", "description", "id", "allowedMemberTypes"],
+                            columns: [
+                                { field: 'displayName', header: 'Name' },
+                                { field: 'userPrincipalName', header: 'userPrincipalName' },
+                                { field: 'accountEnabled', header: 'Enabled', isTag: true },
                             ],
                         },
                     ];

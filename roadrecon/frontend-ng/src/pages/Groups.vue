@@ -56,8 +56,8 @@ export default {
         { field: 'groupTypes', header: 'Group type' },
         { field: 'source', header: 'Group source' },
         { field: 'mail', header: 'Mail' },
-        { field: 'isPublic', header: 'Public?' },
-        { field: 'isAssignableToRole', header: 'Role assignable?' },
+        { field: 'isPublic', header: 'Public?', isTag: true },
+        { field: 'isAssignableToRole', header: 'Role assignable?', isTag: true },
         { field: 'membershipRule', header: 'Dynamic membership' }
       ],
       filterFields:["displayName","description","groupTypes","source","mail","isPublic","isAssignableToRole","membershipRule"],

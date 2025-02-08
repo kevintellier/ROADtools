@@ -51,15 +51,15 @@ export default {
       applications: [],
       columns: [
         { field: 'displayName', header: 'Name' },
-        { field: 'availableToOtherTenants', header: 'Multitenant' },
+        { field: 'availableToOtherTenants', header: 'Multitenant', isTag: true },
         { field: 'homepage', header: 'Homepage' },
-        { field: 'publicClient', header: 'OAuth2 public client' },
-        { field: 'oauth2AllowImplicitFlow', header: 'OAuth2 implicit flow' },
+        { field: 'publicClient', header: 'OAuth2 public client', isTag: true },
+        { field: 'oauth2AllowImplicitFlow', header: 'OAuth2 implicit flow', isTag: true },
         { field: 'passwordCredentials', header: 'Passwords' },
         { field: 'keyCredentials', header: 'Keys' },
         { field: 'appRoles', header: 'Roles defined' },
         { field: 'oauth2Permissions', header: 'OAuth2 Permissions' },
-        { field: 'ownerUsers', header: 'Custom owner' },
+        { field: 'ownerUsers', header: 'Custom owner', isTag: true },
       ],
       filterFields:["displayName","availableToOtherTenants","homepage","publicClient","oauth2AllowImplicitFlow","passwordCredentials","keyCredentials","appRoles","oauth2Permissions","ownerUsers"],
       filters: {
@@ -82,14 +82,14 @@ export default {
             this.totalRecords=response.data.total;
             
             for(var i=0;i<this.applications.length;i++){
-              this.applications[i].availableToOtherTenants = this.applications[i].availableToOtherTenants ? "True" : ""
-              this.applications[i].oauth2AllowImplicitFlow = this.applications[i].oauth2AllowImplicitFlow ? "True" : ""
-              this.applications[i].publicClient = this.applications[i].publicClient ? "True" : ""
+              this.applications[i].availableToOtherTenants = this.applications[i].availableToOtherTenants ? "True" : "False"
+              this.applications[i].oauth2AllowImplicitFlow = this.applications[i].oauth2AllowImplicitFlow ? "True" : "False"
+              this.applications[i].publicClient = this.applications[i].publicClient ? "True" : "False"
               this.applications[i].passwordCredentials = this.applications[i].passwordCredentials.length
               this.applications[i].keyCredentials = this.applications[i].keyCredentials.length
               this.applications[i].appRoles = this.applications[i].appRoles.length
               this.applications[i].oauth2Permissions = this.applications[i].oauth2Permissions.length
-              this.applications[i].ownerUsers = this.applications[i].ownerUsers.length > 0 ? "True" : ""
+              this.applications[i].ownerUsers = this.applications[i].ownerUsers.length > 0 ? "True" : "False"
             }
         })
         .catch(error => {

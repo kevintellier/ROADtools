@@ -28,6 +28,9 @@
           <template #loading> Loading data. Please wait. </template>
           <template v-for="col of columns" :key="col.field">
             <Column sortable :sortField="col.field" :field="col.field" :header="col.header" style="width: 10%" class="selectable-text">
+              <template v-if="col.isTag" #body="slotProps">
+                <Tag :value="slotProps.data[col.field]" :severity="slotProps.data[col.field] == col.tagSuccessValue || String(slotProps.data[col.field]).toLowerCase() === 'true' ? 'success' : 'danger'" />
+              </template>
             </Column>
           </template>
         </DataTable>
@@ -50,6 +53,7 @@ import { FilterMatchMode } from '@primevue/core/api';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
+import Tag from 'primevue/tag';
 
 export default {
   name: 'ObjectTable',
@@ -58,7 +62,7 @@ export default {
       page: 0,
       rows: 50,
       sortedField: "",
-      sortOrder: 0
+      sortOrder: 0,
     }
   },
   props: {
@@ -109,6 +113,10 @@ export default {
     sortOrder: {
       type: Number,
       required: false
+    },
+    tagFields: {
+      type: Array,
+      required: false
     }
   },
   components: {
@@ -117,7 +125,8 @@ export default {
     IconField,
     FilterMatchMode,
     Column,
-    DataTable
+    DataTable,
+    Tag
   },
   methods: {
     handleRowClick(event) {

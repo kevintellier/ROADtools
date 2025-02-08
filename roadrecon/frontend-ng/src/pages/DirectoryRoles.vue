@@ -67,7 +67,7 @@ export default {
       columns: [
         { field: 'principal.displayName', header: 'Principal Name' },
         { field: 'scopeNames', header: 'Scope' },
-        { field: 'type', header: 'Assignment Type' },
+        { field: 'type', header: 'Assignment Type', isTag: true, tagSuccessValue: "Active" },
         { field: 'principal.objectType', header: 'Principal Type' },
         { field: 'principal.userPrincipalName', header: 'userPrincipalName' },
         { field: 'principal.dirSyncEnabled', header: 'Account type' },

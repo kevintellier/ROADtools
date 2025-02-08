@@ -49,14 +49,14 @@ export default {
       columns: [
         { field: 'displayName', header: 'Name' },
         { field: 'deviceManufacturer', header: 'Manufacturer' },
-        { field: 'accountEnabled', header: 'Enabled' },
+        { field: 'accountEnabled', header: 'Enabled', isTag: true },
         { field: 'deviceModel', header: 'Model' },
         { field: 'deviceOSType', header: 'OS' },
         { field: 'deviceOSVersion', header: 'OS Version' },
         { field: 'deviceTrustType', header: 'Trust type' },
-        { field: 'isCompliant', header: 'Compliant' },
-        { field: 'isManaged', header: 'Managed' },
-        { field: 'isRooted', header: 'Rooted' },
+        { field: 'isCompliant', header: 'Compliant', isTag: true },
+        { field: 'isManaged', header: 'Managed', isTag: true },
+        { field: 'isRooted', header: 'Rooted', isTag: true },
       ],
       filterFields:["displayName","deviceManufacturer","accountEnabled","deviceModel","deviceOSType","deviceOSVersion","deviceTrustType","isCompliant","isManaged","isRooted"],
       filters: {
@@ -80,6 +80,9 @@ export default {
             
             for(var i=0;i<this.devices.length;i++){
               this.devices[i].accountEnabled = this.devices[i].accountEnabled ? "True" : "False"
+              this.devices[i].isCompliant = this.devices[i].isCompliant ? "True" : "False"
+              this.devices[i].isManaged = this.devices[i].isManaged ? "True" : "False"
+              this.devices[i].isRooted = this.devices[i].isRooted ? "True" : "False"
             }
         })
         .catch(error => {
