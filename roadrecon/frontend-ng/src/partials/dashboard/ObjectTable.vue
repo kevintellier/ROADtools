@@ -9,7 +9,7 @@
         <DataTable paginator :rows=rowsPerPageOptions[0] :lazy selectionMode="single" tableStyle="min-width: 50rem"
           v-model:filters="filters" :value="values" :loading
           :rowsPerPageOptions :globalFilterFields="filterFields" :totalRecords
-          @row-click="goToDetail" @page="pageChange" @sort="sortPage">
+          @row-click="handleRowClick" @page="pageChange" @sort="sortPage" class="selectable-text">
           <template #header>
             <div class="flex">
               <IconField v-if="!noSearch">
@@ -27,7 +27,7 @@
           <template #empty> No data found. </template>
           <template #loading> Loading data. Please wait. </template>
           <template v-for="col of columns" :key="col.field">
-            <Column sortable :sortField="col.field" :field="col.field" :header="col.header" style="width: 10%">
+            <Column sortable :sortField="col.field" :field="col.field" :header="col.header" style="width: 10%" class="selectable-text">
             </Column>
           </template>
         </DataTable>
@@ -35,6 +35,12 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+  .selectable-text {
+    user-select: text;
+  }
+</style>
 
 <script>
 import { ref } from 'vue'
@@ -110,6 +116,12 @@ export default {
     DataTable
   },
   methods: {
+    handleRowClick(event) {
+      const selection = window.getSelection().toString();
+      if (!selection) {
+        this.goToDetail(event);
+      }
+    },
     goToDetail(event) {
       if(event.data.principal){
         this.$router.push({ name: 'RowDetail', params: { objectId: event.data.principal.objectId, objectType: event.data.principal.objectType } });
