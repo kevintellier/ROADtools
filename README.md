@@ -8,6 +8,20 @@
 
 ROADtools is a framework to interact with Azure AD. It consists of a library (roadlib) with common components, the ROADrecon Azure AD exploration tool and the ROADtools Token eXchange (roadtx) tool.
 
+## Roadrecon UI NG
+
+### New features
+
+- New Frontend based on Vite, VueJS and PrimeVue framework
+- Backend pagination for better performance on large databases
+- Added a Policies detail page
+
+## Credits
+
+- Dirk-jan Mollema as the original author of the backend and the tool suite
+- Kevin Tellier from Synacktiv for the new UI
+- Template by [Cruip.com](https://cruip.com/)
+
 ## ROADlib
 ![PyPI version](https://img.shields.io/pypi/v/roadlib.svg)
 
@@ -42,13 +56,10 @@ pip install roadrecon/
 You can also install them in development mode with `pip install -e roadlib/`.
 
 **Developing the front-end**  
-If you want to make changes to the Angular front-end, you will need to have `node` and `npm` installed. Then install the components from git:
+If you want to make changes to the VueJS front, you can specify an environment variable TARGET in order to build the dev environment:
 ```
-git clone https://github.com/dirkjanm/roadtools.git
-pip install -e roadlib/
-pip install -e roadrecon/
-cd roadrecon/frontend/
-npm install
+cd roadrecon
+TARGET=dev docker-compose up -d
 ```
 
 You can run the Angular frontend with `npm start` or `ng serve` using the Angular CLI from the `roadrecon/frontend/` directory. To build the JavaScript files into ROADrecon's `dist_gui` directory, run `npm build`.
