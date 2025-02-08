@@ -241,7 +241,7 @@
                             </div>
                           </div>
                           <div class="flex-1 m-4 p-tag-danger p-4 rounded-2xl"
-                            v-if="policy.policyDetail.Conditions.ClientTypes.Exclude">
+                            v-if="policy.policyDetail.Conditions.ClientTypes.Exclude && policy.policyDetail.Conditions.ClientTypes.Exclude.length > 0">
                             <div
                               class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
                               <div class="overview-info">
@@ -265,7 +265,7 @@
                         <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Platforms</span>
                         <div class="flex flex-wrap" v-if="policy.policyDetail.Conditions.DevicePlatforms">
                           <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl"
-                            v-if="policy.policyDetail.Conditions.DevicePlatforms.Include">
+                            v-if="policy.policyDetail.Conditions.DevicePlatforms.Include && policy.policyDetail.Conditions.DevicePlatforms.Include.length > 0">
                             <div
                               class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
                               <div class="overview-info">
@@ -283,7 +283,7 @@
                             </div>
                           </div>
                           <div class="flex-1 m-4 p-tag-danger p-4 rounded-2xl"
-                            v-if="policy.policyDetail.Conditions.DevicePlatforms.Exclude">
+                            v-if="policy.policyDetail.Conditions.DevicePlatforms.Exclude && policy.policyDetail.Conditions.DevicePlatforms.Exclude.length > 0">
                             <div
                               class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
                               <div class="overview-info">
@@ -307,7 +307,7 @@
                         <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Devices</span>
                         <div class="flex flex-wrap" v-if="policy.policyDetail.Conditions.Devices">
                           <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl"
-                            v-if="policy.policyDetail.Conditions.Devices.Include">
+                            v-if="policy.policyDetail.Conditions.Devices.Include && policy.policyDetail.Conditions.Devices.Include.length > 0">
                             <div
                               class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
                               <div class="overview-info">
@@ -348,7 +348,7 @@
                         <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Locations</span>
                         <div class="flex flex-wrap" v-if="policy.policyDetail.Conditions.Locations">
                           <div class="flex-1 m-4 p-tag-success p-4 rounded-2xl"
-                            v-if="policy.policyDetail.Conditions.Locations.Include">
+                            v-if="policy.policyDetail.Conditions.Locations.Include  && policy.policyDetail.Conditions.Locations.Include.length > 0">
                             <div
                               class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
                               <div class="overview-info">
@@ -364,7 +364,7 @@
                             </div>
                           </div>
                           <div class="flex-1 m-4 p-tag-danger p-4 rounded-2xl"
-                            v-if="policy.policyDetail.Conditions.Locations.Exclude">
+                            v-if="policy.policyDetail.Conditions.Locations.Exclude && policy.policyDetail.Conditions.Locations.Exclude.length > 0">
                             <div
                               class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
                               <div class="overview-info">
@@ -489,7 +489,7 @@
                           </div>
                         </div>
                       </div>
-                      <div v-if="location.associatedpolicies">
+                      <div v-if="location.associatedpolicies && location.associatedpolicies.length > 0">
                         <span class="pi pi-link"></span>
                         <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Associated Policies</span>
                         <div class="flex flex-wrap">
@@ -508,7 +508,7 @@
                           </div>
                         </div>
                       </div>
-                      <div v-if="location.policyDetail.CountryIsoCodes">
+                      <div v-if="location.policyDetail.CountryIsoCodes && location.policyDetail.CountryIsoCodes.length > 0">
                         <span class="pi pi-flag"></span>
                         <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Country ISO codes</span>
                         <div class="flex flex-wrap">
