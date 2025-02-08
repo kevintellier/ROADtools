@@ -489,7 +489,7 @@
                           </div>
                         </div>
                       </div>
-                      <div v-if="location.associatedpolicies && location.associatedpolicies.length > 0">
+                      <div v-if="location.associatedpolicies && location.associatedpolicies.length > 1">
                         <span class="pi pi-link"></span>
                         <span class="text-surface-500 dark:text-surface-300 text-lg font-semibold m-4">Associated Policies</span>
                         <div class="flex flex-wrap">
