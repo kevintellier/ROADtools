@@ -30,6 +30,7 @@
 import { ref, toRaw } from 'vue'
 import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import { FilterMatchMode } from '@primevue/core/api';
+import { showError } from '../services/toast';
 import axios from 'axios'
 
 const filters = ref();
@@ -71,7 +72,8 @@ export default {
             this.totalRecords=response.data.total;
         })
         .catch(error => {
-            console.log(error)
+          showError("Error loading Administrative units from API", error.message)
+          console.log(error)
       })
       .finally(() => {
           this.loading = false;

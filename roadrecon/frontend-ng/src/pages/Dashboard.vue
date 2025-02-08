@@ -141,6 +141,7 @@ import Card from 'primevue/card';
 import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import DataView from 'primevue/dataview';
 import Tag from 'primevue/tag';
+import { showError } from '../services/toast';
 import { FilterMatchMode } from '@primevue/core/api';
 import axios from 'axios'
 
@@ -223,6 +224,7 @@ export default {
         this.cards.filter((o) => { return o.title == "Administrative Units" })[0].value = countAdministrativeUnits
       })
       .catch(error => {
+        showError("Error loading stats from API", error.message)
         console.log(error)
       })
 

@@ -41,6 +41,7 @@ import Accordion from 'primevue/accordion';
 import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
+import { showError } from '../services/toast';
 import Tag from 'primevue/tag';
 import axios from 'axios'
 
@@ -93,7 +94,7 @@ export default {
             }
         })
         .catch(error => {
-            console.log("Error getting role definitions from API:")
+            showError("Error loading role definitions from API", error.message)
             console.log(error)
       })
   }

@@ -6,6 +6,7 @@
     <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
       <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen" />
       <router-view :key="$route.fullPath"/>
+      <Toast />
     </div>
   </div>
 </template>
@@ -14,6 +15,7 @@
 import { ref } from 'vue'
 import Sidebar from './partials/Sidebar.vue'
 import Header from './partials/Header.vue'
+import Toast from 'primevue/toast';
 import { useDark } from "@vueuse/core";
 
 
@@ -22,6 +24,7 @@ export default {
   components: {
     Sidebar,
     Header,
+    Toast,
   },
   setup() {
 

@@ -31,6 +31,7 @@
 <script>
 import { ref, toRaw } from 'vue'
 import ObjectTable from '../partials/dashboard/ObjectTable.vue'
+import { showError } from '../services/toast';
 import { FilterMatchMode } from '@primevue/core/api';
 import axios from 'axios'
 
@@ -91,6 +92,7 @@ export default {
             }
         })
         .catch(error => {
+            showError("Error loading Applications from API", error.message)
             console.log(error)
       })
       .finally(() => {

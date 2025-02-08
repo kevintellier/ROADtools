@@ -118,6 +118,7 @@ import axios from 'axios'
 import Card from 'primevue/card';
 import Tag from 'primevue/tag';
 import DataView from 'primevue/dataview';
+import { showError } from '../services/toast';
 
 const filters = ref();
 
@@ -638,19 +639,21 @@ export default {
                 }
             })
             .catch(error => {
-                console.log(this.err)
                 if(error.status == 404){
                     this.err="User not found"
+                    showError(this.err, error.message)
                     console.log(this.err)
                     return
                 }
                 else if(error.status == 500){
                     this.err="Unknown object"
+                    showError(this.err, error.message)
                     console.log(this.err)
                     return
                 }
                 else if(error.status != 200){
                     this.err="Unknown error"
+                    showError(this.err, error.message)
                     console.log(error)
                     return
                 }

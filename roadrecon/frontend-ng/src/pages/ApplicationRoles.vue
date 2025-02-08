@@ -31,6 +31,7 @@
 <script>
 import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import { FilterMatchMode } from '@primevue/core/api';
+import { showError } from '../services/toast';
 import axios from 'axios'
 
 export default {
@@ -72,6 +73,7 @@ export default {
             this.totalRecords=response.data.total;
         })
         .catch(error => {
+            showError("Error loading App roles from API", error.message)
             console.log(error)
       })
       .finally(() => {
