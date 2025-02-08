@@ -32,6 +32,13 @@ export default defineConfig({
         target: 'http://backend:5000',
         changeOrigin: true,
       },
+    },
+    fs: {
+      allow: [
+        '/usr/src/node_modules/primeicons/',
+        '/usr/src/node_modules/vite/dist/client',
+        '/usr/src/app/src'
+      ]
     }
   }
 })
