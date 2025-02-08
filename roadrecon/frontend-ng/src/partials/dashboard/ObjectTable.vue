@@ -10,16 +10,17 @@
           paginator
           resizableColumns
           columnResizeMode="fit"
-          :paginatorPosition=paginatorPosition 
-          :rows=rowsPerPageOptions[0] 
-          :lazy selectionMode="single" 
+          :paginatorPosition="paginatorPosition" 
+          :rows="rowsPerPageOptions[0]" 
+          :lazy="lazy" 
+          selectionMode="single" 
           tableStyle="min-width: 50rem"
           v-model:filters="filters" 
           :value="values" 
-          :loading
-          :rowsPerPageOptions 
+          :loading="loading"
+          :rowsPerPageOptions="rowsPerPageOptions" 
           :globalFilterFields="filterFields" 
-          :totalRecords
+          :totalRecords="totalRecords"
           @row-click="handleRowClick" 
           @page="pageChange" 
           @sort="sortPage" 
@@ -33,6 +34,13 @@
                 <InputText v-model="filters['global'].value" placeholder="Global Search.."
                   @update:modelValue="inputTextUpdated" />
               </IconField>
+              <MultiSelect 
+                v-model="selectedColumns" 
+                :options="columns" 
+                optionLabel="header" 
+                display="chip" 
+                placeholder="Select Columns" 
+              />
               <span v-if="totalRecords" class="pl-3 self-center text-gray-400">
                 {{ totalRecords.toLocaleString('fr-FR') }} results
               </span>
@@ -40,10 +48,19 @@
           </template>
           <template #empty> No data found. </template>
           <template #loading> Loading data. Please wait. </template>
-          <template v-for="col of columns" :key="col.field">
-            <Column sortable :sortField="col.field" :field="col.field" :header="col.header" style="width: 10%" class="selectable-text">
+          <template v-for="col of selectedColumns" :key="col.field">
+            <Column 
+              :sortable="true" 
+              :sortField="col.field" 
+              :field="col.field" 
+              :header="col.header" 
+              style="width: 10%" 
+              class="selectable-text">
               <template v-if="col.isTag" #body="slotProps">
-                <Tag :value="slotProps.data[col.field]" :severity="slotProps.data[col.field] == col.tagSuccessValue || String(slotProps.data[col.field]).toLowerCase() === 'true' ? 'success' : 'danger'" />
+                <Tag 
+                  :value="slotProps.data[col.field]" 
+                  :severity="slotProps.data[col.field] == col.tagSuccessValue || String(slotProps.data[col.field]).toLowerCase() === 'true' ? 'success' : 'danger'" 
+                />
               </template>
             </Column>
           </template>
@@ -67,16 +84,18 @@ import { FilterMatchMode } from '@primevue/core/api';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
+import MultiSelect from 'primevue/multiselect';
 import Tag from 'primevue/tag';
 
 export default {
   name: 'ObjectTable',
-  data(){
+  data() {
     return {
       page: 0,
       rows: 50,
       sortedField: "",
       sortOrder: 0,
+      selectedColumns: this.columns // Initialize with all columns
     }
   },
   props: {
@@ -114,7 +133,7 @@ export default {
     rowsPerPageOptions: {
       type: Array,
       required: false,
-      default: [50, 100, 200, 1000]
+      default: () => [50, 100, 200, 1000]
     },
     sortedField: {
       type: String,
@@ -140,9 +159,13 @@ export default {
     FilterMatchMode,
     Column,
     DataTable,
-    Tag
+    Tag,
+    MultiSelect
   },
   methods: {
+    onToggle(val) {
+      this.selectedColumns = this.columns.filter(col => val.includes(col));
+    },
     handleRowClick(event) {
       const selection = window.getSelection().toString();
       if (!selection) {
