@@ -10,6 +10,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
 import './css/style.css'
+import dayjs from 'dayjs'
 
 export const app = createApp(App)
 app.use(router)
@@ -26,6 +27,9 @@ app.use(PrimeVue, {
         }
     }
 });
+
+//Date conversion
+app.config.globalProperties.$dayjs = dayjs
 
 //Notification service
 app.use(ToastService)

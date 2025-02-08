@@ -35,8 +35,8 @@ export default defineConfig({
     },
     fs: {
       allow: [
-        '/usr/src/node_modules/primeicons/',
-        '/usr/src/node_modules/vite/dist/client',
+        '/usr/src/app/node_modules/primeicons/',
+        '/usr/src/app/node_modules/vite/dist/client',
         '/usr/src/app/src'
       ]
     }

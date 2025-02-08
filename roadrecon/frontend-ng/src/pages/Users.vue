@@ -35,7 +35,8 @@ import { ref, toRaw } from 'vue'
 import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import { FilterMatchMode } from '@primevue/core/api';
 import { showError } from '../services/toast';
-import axios from 'axios'
+import axios from 'axios';
+import dayjs from 'dayjs';
 
 const filters = ref();
 
@@ -83,6 +84,7 @@ export default {
             
             for(var i=0;i<this.users.length;i++){
               this.users[i].accountEnabled = this.users[i].accountEnabled ? "True" : "False"
+              this.users[i].lastPasswordChangeDateTime = dayjs(this.users[i].lastPasswordChangeDateTime).format("DD/MM/YYYY HH:mm")
             }
         })
         .catch(error => {

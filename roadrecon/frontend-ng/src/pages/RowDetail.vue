@@ -107,6 +107,7 @@
 
 <script>
 import { ref, toRaw } from 'vue'
+import dayjs from 'dayjs';
 import ObjectTable from '../partials/dashboard/ObjectTable.vue'
 import { FilterMatchMode } from '@primevue/core/api';
 import Tabs from 'primevue/tabs';
@@ -276,7 +277,7 @@ export default {
                         },
                         {
                             name: "Last password change",
-                            value: this.object.lastPasswordChangeDateTime,
+                            value: dayjs(this.object.lastPasswordChangeDateTime).format("DD/MM/YYYY HH:mm"),
                         },
                         {
                             name: "Account source",
@@ -288,11 +289,7 @@ export default {
                         },
                         {
                             name: "Creation date",
-                            value: this.object.createdDateTime,
-                        },
-                        {
-                            name: "Creation date",
-                            value: this.object.createdDateTime,
+                            value: dayjs(this.object.createdDateTime).format("DD/MM/YYYY HH:mm"),
                         },
                     ];
                 }
@@ -375,7 +372,7 @@ export default {
                         },
                         {
                             name: "Created",
-                            value: this.object.createdDateTime,
+                            value: dayjs(this.object.createdDateTime).format("DD/MM/YYYY HH:mm"),
                         },
                         {
                             name: "Group source",
