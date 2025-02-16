@@ -20,6 +20,7 @@
         :totalRecords
         :loading
         :tagFields=tagFields
+        multiselect
         paginatorPosition="both"
         @pageChange="fetchData"
         @inputTextUpdated="fetchData"

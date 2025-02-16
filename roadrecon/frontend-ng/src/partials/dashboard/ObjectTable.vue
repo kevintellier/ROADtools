@@ -1,6 +1,6 @@
 <template>
   <div class="col-span-full xl:col-span-8 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
-    <header v-if="title" class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
+    <header v-if="title" class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex justify-between items-center">
       <h2 class="font-semibold text-gray-800 dark:text-gray-100">{{ title }}</h2>
     </header>
     <div>
@@ -34,7 +34,9 @@
                 <InputText v-model="filters['global'].value" placeholder="Global Search.."
                   @update:modelValue="inputTextUpdated" />
               </IconField>
-              <MultiSelect 
+              <Button v-if="exportCSV" n @click="exportToCSV" class="bg-blue-500 text-white px-4 py-2 rounded">Export to CSV</Button>
+              <MultiSelect
+                v-if="multiselect" 
                 v-model="selectedColumns" 
                 :options="columns" 
                 optionLabel="header" 
@@ -85,7 +87,9 @@ import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
 import MultiSelect from 'primevue/multiselect';
+import Button from 'primevue/button';
 import Tag from 'primevue/tag';
+import axios from 'axios';
 
 export default {
   name: 'ObjectTable',
@@ -95,7 +99,8 @@ export default {
       rows: 50,
       sortedField: "",
       sortOrder: 0,
-      selectedColumns: this.columns // Initialize with all columns
+      selectedColumns: this.columns, // Initialize with all columns
+      allData: [] // Store all data for export
     }
   },
   props: {
@@ -150,7 +155,17 @@ export default {
     tagFields: {
       type: Array,
       required: false
-    }
+    },
+    multiselect:{
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    exportToCSV:{
+      type: Boolean,
+      required: false,
+      default: false
+    },
   },
   components: {
     InputText,
@@ -160,9 +175,42 @@ export default {
     Column,
     DataTable,
     Tag,
-    MultiSelect
+    MultiSelect,
+    Button
   },
   methods: {
+    async fetchAllData() {
+      try {
+        const response = await axios.get('/api/data', {
+          params: {
+            // Add any necessary parameters for fetching all data
+          }
+        });
+        this.allData = response.data;
+      } catch (error) {
+        console.error('Error fetching all data:', error);
+      }
+    },
+    async exportToCSV() {
+      const csvContent = [];
+      const headers = this.selectedColumns.map(col => col.header);
+      csvContent.push(headers.join(','));
+
+      this.allData.forEach(row => {
+        const rowData = this.selectedColumns.map(col => row[col.field]);
+        csvContent.push(rowData.join(','));
+      });
+
+      const blob = new Blob([csvContent.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'table_data.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
     onToggle(val) {
       this.selectedColumns = this.columns.filter(col => val.includes(col));
     },
@@ -232,7 +280,6 @@ export default {
         matchMode: FilterMatchMode.CONTAINS
       },
     });
-
 
     return {
       filters,

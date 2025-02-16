@@ -20,6 +20,7 @@
         :totalRecords
         :loading
         noSearch
+        multiselect
         paginatorPosition="both"
         @pageChange="fetchData"
         @pageSort="fetchData"

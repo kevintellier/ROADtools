@@ -19,6 +19,7 @@
         :filters="filters" 
         :totalRecords
         :loading
+        multiselect
         paginatorPosition="both"
         @pageChange="fetchData"
         @inputTextUpdated="fetchData"
