@@ -9,13 +9,14 @@
         <div class="mb-4 sm:mb-0 flex">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
           <Button @click="toggleAllPolicies" class="ml-4 px-4 py-2">Toggle All policies</Button>
+          <Button @click="toggleEnabledPolicies" :class="{'p-tag-info':showEnabledOnly}" class="ml-4 px-4 py-2">Show Enabled Policies</Button>
         </div>
       </div>
       <!-- Cards -->
       <div class="grid gap-6 rounded-3xl overflow-auto" v-if="!loading">
         <!--Don't know why its 11 -->
         <Accordion :value="expandedPoliciesPanels" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="policies">
-          <template v-for="(policy, index) in policies">
+          <template v-for="(policy, index) in filteredPolicies" :key="index">
             <AccordionPanel :value="String(index)">
               <AccordionHeader>
                 <span :ref="policy.displayName" class="flex items-center gap-2 w-full">
@@ -617,7 +618,16 @@ export default {
       },
       loading: true,
       expandedPoliciesPanels: [],
-      expandedLocationsPanels: []
+      expandedLocationsPanels: [],
+      showEnabledOnly: false
+    }
+  },
+  computed: {
+    filteredPolicies() {
+      if (this.showEnabledOnly) {
+        return this.policies.filter(policy => policy.policyDetail.State === 'Enabled');
+      }
+      return this.policies;
     }
   },
   mounted() {
@@ -683,6 +693,9 @@ export default {
       } else {
         this.expandedLocationsPanels = this.policies.map((_, index) => String(index));
       }
+    },
+    toggleEnabledPolicies() {
+      this.showEnabledOnly = !this.showEnabledOnly;
     }
   },
 }
