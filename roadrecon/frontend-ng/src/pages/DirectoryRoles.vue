@@ -87,9 +87,9 @@ export default {
             for(var i=0;i<this.directoryroles.length;i++){
               for(var j=0;j<this.directoryroles[i].assignments.length;j++){
                 this.directoryroles[i].assignments[j].scopeNames = this.directoryroles[i].assignments[j].scopeNames[0]
-                this.directoryroles[i].assignments[j].type = this.directoryroles[i].assignments[j].type == "assignment" ? "Active" : ""
+                this.directoryroles[i].assignments[j].type = this.directoryroles[i].assignments[j].type == "assignment" ? "Active" : "Disabled"
                 this.directoryroles[i].assignments[j].principal.dirSyncEnabled = this.directoryroles[i].assignments[j].principal.dirSyncEnabled ? "AD" : "Cloud"
-                this.directoryroles[i].assignments[j].principal.accountEnabled = this.directoryroles[i].assignments[j].principal.accountEnabled ? "Active" : ""
+                this.directoryroles[i].assignments[j].principal.accountEnabled = this.directoryroles[i].assignments[j].principal.accountEnabled ? "Enabled" : "Disabled"
               }
             }
         })
