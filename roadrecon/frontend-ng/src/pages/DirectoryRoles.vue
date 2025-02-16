@@ -4,16 +4,15 @@
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full mx-auto">
       <!-- Dashboard actions -->
       <div class="sm:flex sm:justify-between sm:items-center mb-8">
-
         <!-- Left: Title -->
-        <div class="mb-4 sm:mb-0">
+        <div class="mb-4 sm:mb-0 flex items-center">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
+          <Button @click="toggleAll" class="ml-4 px-4 py-2">Toggle All</Button>
         </div>
       </div>
       <!-- Cards -->
       <div class="grid gap-6 rounded-3xl overflow-auto">
-        <!--Don't know why its 11 -->
-        <Accordion :value="['0','11']" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
+        <Accordion :value="expandedPanels" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
           <template v-for="(directoryRole, index) in directoryroles">
             <AccordionPanel :value="String(index)" v-if="directoryRole.assignments.length > 0">
                 <AccordionHeader>
@@ -42,6 +41,7 @@ import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import { showError } from '../services/toast';
+import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import axios from 'axios'
 
@@ -58,7 +58,8 @@ export default {
     AccordionPanel,
     AccordionHeader,
     AccordionContent,
-    Tag
+    Tag,
+    Button
   },
   data(){
     return {
@@ -77,6 +78,16 @@ export default {
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
+      expandedPanels: []
+    }
+  },
+  methods: {
+    toggleAll() {
+      if (this.expandedPanels.length === this.directoryroles.length) {
+        this.expandedPanels = [];
+      } else {
+        this.expandedPanels = this.directoryroles.map((_, index) => String(index));
+      }
     }
   },
   mounted() {
