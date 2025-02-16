@@ -5,7 +5,7 @@
       <!-- Dashboard actions -->
       <div class="sm:flex sm:justify-between sm:items-center mb-8">
         <!-- Left: Title -->
-        <div class="mb-4 sm:mb-0 flex items-center">
+        <div class="mb-4 sm:mb-0 flex">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
           <Button @click="toggleAll" class="ml-4 px-4 py-2">Toggle All</Button>
         </div>

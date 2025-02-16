@@ -6,14 +6,15 @@
       <div class="sm:flex sm:justify-between sm:items-center mb-8">
 
         <!-- Left: Title -->
-        <div class="mb-4 sm:mb-0">
+        <div class="mb-4 sm:mb-0 flex">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
+          <Button @click="toggleAllPolicies" class="ml-4 px-4 py-2">Toggle All policies</Button>
         </div>
       </div>
       <!-- Cards -->
       <div class="grid gap-6 rounded-3xl overflow-auto" v-if="!loading">
         <!--Don't know why its 11 -->
-        <Accordion multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="policies">
+        <Accordion :value="expandedPoliciesPanels" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="policies">
           <template v-for="(policy, index) in policies">
             <AccordionPanel :value="String(index)">
               <AccordionHeader>
@@ -446,9 +447,12 @@
           </template>
         </Card>
 
-        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Named Locations</h1>
+        <div class="flex">
+          <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Named Locations</h1>
+          <Button @click="toggleAllLocations" class="ml-4 px-4 py-2">Toggle All policies</Button>
+        </div>
 
-        <Accordion multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="namedLocations">
+        <Accordion  :value="expandedLocationsPanels" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="namedLocations">
           <template v-for="(location, index) in namedLocations">
             <AccordionPanel :value="String(index)">
               <AccordionHeader>
@@ -569,6 +573,7 @@ import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
 import { showError } from '../services/toast';
+import Button from 'primevue/button';
 
 const filters = ref();
 
@@ -593,6 +598,7 @@ export default {
     TabList,
     TabPanels,
     TabPanel,
+    Button
   },
   data() {
     return {
@@ -609,8 +615,9 @@ export default {
       filters: {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
-      rawObject: {},
-      loading: true
+      loading: true,
+      expandedPoliciesPanels: [],
+      expandedLocationsPanels: []
     }
   },
   mounted() {
@@ -662,6 +669,20 @@ export default {
     goto(refName) {
     	var element = this.$refs[refName];
       element[0].scrollIntoView({ behavior: "smooth", block: "center" });
+    },
+    toggleAllPolicies() {
+      if (this.expandedPoliciesPanels.length === this.policies.length) {
+        this.expandedPoliciesPanels = [];
+      } else {
+        this.expandedPoliciesPanels = this.policies.map((_, index) => String(index));
+      }
+    },
+    toggleAllLocations() {
+      if (this.expandedLocationsPanels.length === this.policies.length) {
+        this.expandedLocationsPanels = [];
+      } else {
+        this.expandedLocationsPanels = this.policies.map((_, index) => String(index));
+      }
     }
   },
 }
