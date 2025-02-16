@@ -25,7 +25,7 @@
         <div class="col-span-12">
           <div class="flex gap-4">
             <div v-for="(card, index) in cards" class="w-full md:w-1/2 lg:w-1/3 xl:w-1/6">
-              <Card :index @click="goToDetail(index)">
+              <Card :index @click="goToDetail(index)" class="h-full">
                 <template #content>
                   <div
                     class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between h-full !rounded-2xl">
@@ -43,6 +43,117 @@
               </Card>
             </div>
           </div>
+        </div>
+        <div class="pt-0 col-span-8">
+          <Card>
+            <template #title>
+              <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
+                Application consent settings
+              </div>
+            </template>
+            <template #content>
+              <div class="flex gap-4" v-if="appConsentSettings">
+                <div v-for="(setting, index) in appConsentSettings" class="flex m-0! p-2" :class="dynamicWidth">
+                  <Tag class="w-full !p-0">
+                    <Card class="p-tag-info size-full">
+                      <template #content>
+                        <div
+                          class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between h-full !rounded-2xl">
+                          <div v-if="setting == 'ManagePermissionGrantsForOwnedResource.microsoft-dynamically-managed-permissions-for-team'" class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Resource specific consent for Teams: Managed by Microsoft
+                            </div>
+                          </div>
+                          <div v-else-if="setting == 'ManagePermissionGrantsForOwnedResource.microsoft-dynamically-managed-permissions-for-chat'" class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Resource specific consent for chats: Managed by Microsoft
+                            </div>
+                          </div>
+                          <div v-else-if="setting == 'ManagePermissionGrantsForSelf.microsoft-user-default-low'" class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Users can consent to limited permissions only (default)
+                            </div>
+                          </div>
+                          <div v-else-if="setting == 'ManagePermissionGrantsForSelf.microsoft-user-default-legacy'" class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Users can consent to applications (insecure old default)
+                            </div>
+                          </div>
+                          <div v-else class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Unknown: {{ setting }}
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                    </Card>
+                  </Tag>
+                </div>
+              </div>
+              <div v-else>
+                <div class="flex m-0! p-2">
+                  <Tag class="w-full !p-0">
+                    <Card class="p-tag-danger size-full">
+                      <template #content>
+                        <div
+                          class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between h-full !rounded-2xl">
+                          <div class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              User consent is disabled
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                    </Card>
+                  </Tag>
+                </div>
+              </div>
+            </template>
+          </Card>
+        </div>
+        <div class="pt-0 col-span-4">
+          <Card class="h-full">
+            <template #title>
+              <div class="m-0 text-surface-500 dark:text-surface-300 text-2xl font-semibold">
+                Guest access settings
+              </div>
+            </template>
+            <template #content>
+              <div class="flex gap-4">
+                <div class="flex m-0! p-2 w-full">
+                  <Tag class="w-full !p-0">
+                    <Card class="p-tag-info size-full">
+                      <template #content>
+                        <div
+                          class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between h-full !rounded-2xl">
+                          <div v-if="guestAccessSettings == 'a0b1b346-4d3e-4e8b-98f8-753987be4970'" class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Same as member users
+                            </div>
+                          </div>
+                          <div v-else-if="guestAccessSettings == '10dae51f-b6af-4016-8d66-8c2a99b929b3'" class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Limited access (default)
+                            </div>
+                          </div>
+                          <div v-else-if="guestAccessSettings == '2af84b1e-32c8-42b7-82bc-daa82404023b'" class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Restricted access
+                            </div>
+                          </div>
+                          <div v-else class="overview-info">
+                            <div class="m-0 mb-1 text-surface-500 dark:text-surface-300 text-lg font-semibold">
+                              Unknown: {{ guestAccessSettings }}
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                    </Card>
+                  </Tag>
+                </div>
+              </div>
+            </template>
+          </Card>
         </div>
         <div class="col-span-12 xl:col-span-7 pt-0">
           <Card>
@@ -78,8 +189,8 @@
         </div>
         <div class="col-span-12 xl:col-span-5 pt-0">
           <div class="flex gap-4 items-center h-full">
-            <div v-for="(card, index) in smallCards" class="basis-1/2">
-              <Card :class="[card.value ? 'p-tag-success' : 'p-tag-danger ']">
+            <div v-for="(card, index) in smallCards" class="basis-1/2 h-full">
+              <Card :class="[card.value ? 'p-tag-success' : 'p-tag-danger ']" class="h-full">
                 <template #content>
                   <div
                     class="card bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-300 flex justify-between !rounded-2xl">
@@ -161,6 +272,12 @@ export default {
       this.$router.push({ name: this.cards[$index].title });
     }
   },
+  computed: {
+    dynamicWidth() {
+      const length = this.guestAccessSettings.length;
+      return ` w-1/${length}`;
+    }
+  },
   data() {
     return {
       cards: [
@@ -199,6 +316,7 @@ export default {
       userPermissionCards:[],
       overviewItems: [],
       tenantDomains: [],
+      guestAccessSettings: [],
       columns: [
         { field: 'name', header: 'Name' },
         { field: 'type', header: 'Type' },
@@ -267,6 +385,10 @@ export default {
           },
         ]
         this.userPermissionCards = defaultUserRolePermissions
+
+        this.appConsentSettings = response.data[0].permissionGrantPolicyIdsAssignedToDefaultUserRole
+
+        this.guestAccessSettings = response.data[0].guestUserRoleId
 
         const smallCardsValues = [
           {
