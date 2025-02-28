@@ -37,10 +37,11 @@
               <Button v-if="exportCSV" n @click="exportToCSV" class="bg-blue-500 text-white px-4 py-2 rounded">Export to CSV</Button>
               <MultiSelect
                 v-if="multiselect" 
-                v-model="selectedColumns" 
+                :modelValue="selectedColumns" 
                 :options="columns" 
-                optionLabel="header" 
-                display="chip" 
+                optionLabel="header"
+                display="chip"
+                @update:modelValue="onToggle"
                 placeholder="Select Columns" 
               />
               <span v-if="totalRecords" class="pl-3 self-center text-gray-400">
