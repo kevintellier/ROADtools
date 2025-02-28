@@ -8,8 +8,8 @@
         <!-- Left: Title -->
         <div class="mb-4 sm:mb-0 flex">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">{{ name }}</h1>
-          <Button @click="toggleAllPolicies" class="ml-4 px-4 py-2">Toggle All policies</Button>
-          <Button @click="toggleEnabledPolicies" :class="{'p-tag-info':showEnabledOnly}" class="ml-4 px-4 py-2">Show Enabled Policies</Button>
+          <Button @click="toggleAllPolicies" :class="{'p-button-success':showAllPolicies}" class="ml-4 px-4 py-2">Toggle All policies</Button>
+          <Button @click="toggleEnabledPolicies" :class="{'p-button-success':showEnabledOnly}" class="ml-4 px-4 py-2">Show Enabled Policies</Button>
         </div>
       </div>
       <!-- Cards -->
@@ -451,10 +451,11 @@
         <div class="flex">
           <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Named Locations</h1>
           <Button @click="toggleAllLocations" class="ml-4 px-4 py-2">Toggle All policies</Button>
+          <Button @click="toggleTrustedLocations" :class="{'p-button-success':showTrustedLocationsOnly}" class="ml-4 px-4 py-2">Show Trusted Locations</Button>
         </div>
 
-        <Accordion  :value="expandedLocationsPanels" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="namedLocations">
-          <template v-for="(location, index) in namedLocations">
+        <Accordion  :value="expandedLocationsPanels" multiple expandIcon="pi pi-plus" collapseIcon="pi pi-minus" v-if="filteredLocations">
+          <template v-for="(location, index) in filteredLocations">
             <AccordionPanel :value="String(index)">
               <AccordionHeader>
                 <span :ref="location.displayName">
@@ -619,7 +620,9 @@ export default {
       loading: true,
       expandedPoliciesPanels: [],
       expandedLocationsPanels: [],
-      showEnabledOnly: false
+      showEnabledOnly: false,
+      showTrustedLocationsOnly: false,
+      showAllPolicies: false
     }
   },
   computed: {
@@ -628,6 +631,12 @@ export default {
         return this.policies.filter(policy => policy.policyDetail.State === 'Enabled');
       }
       return this.policies;
+    },
+    filteredLocations() {
+      if (this.showTrustedLocationsOnly) {
+        return this.namedLocations.filter(namedLocation => namedLocation.trusted === true);
+      }
+      return this.namedLocations;
     }
   },
   mounted() {
@@ -683,8 +692,10 @@ export default {
     toggleAllPolicies() {
       if (this.expandedPoliciesPanels.length === this.policies.length) {
         this.expandedPoliciesPanels = [];
+        this.showAllPolicies = false;
       } else {
         this.expandedPoliciesPanels = this.policies.map((_, index) => String(index));
+        this.showAllPolicies = true;
       }
     },
     toggleAllLocations() {
@@ -696,6 +707,9 @@ export default {
     },
     toggleEnabledPolicies() {
       this.showEnabledOnly = !this.showEnabledOnly;
+    },
+    toggleTrustedLocations() {
+      this.showTrustedLocationsOnly = !this.showTrustedLocationsOnly;
     }
   },
 }
