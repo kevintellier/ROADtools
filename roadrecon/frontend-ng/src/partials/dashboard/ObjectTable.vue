@@ -15,7 +15,8 @@
           :lazy="lazy" 
           selectionMode="single" 
           tableStyle="min-width: 50rem"
-          v-model:filters="filters" 
+          v-model:filters="filters"
+          size="small" 
           :value="values" 
           :loading="loading"
           :rowsPerPageOptions="rowsPerPageOptions" 
@@ -34,7 +35,7 @@
                 <InputText v-model="filters['global'].value" placeholder="Global Search.."
                   @update:modelValue="inputTextUpdated" />
               </IconField>
-              <Button v-if="exportCSV" n @click="exportToCSV" class="bg-blue-500 text-white px-4 py-2 rounded">Export to CSV</Button>
+              <Button v-if="exportCSV" @click="exportToCSV" class="bg-blue-500 text-white px-4 py-2 rounded">Export to CSV</Button>
               <MultiSelect
                 v-if="multiselect" 
                 :modelValue="selectedColumns" 
@@ -73,9 +74,12 @@
   </div>
 </template>
 
-<style scoped>
+<style>
   .selectable-text {
     user-select: text;
+  }
+  .p-paginator {
+    justify-content: left !important;
   }
 </style>
 
@@ -97,7 +101,7 @@ export default {
   data() {
     return {
       page: 0,
-      rows: 50,
+      rows: 20,
       sortedField: "",
       sortOrder: 0,
       selectedColumns: this.columns, // Initialize with all columns
@@ -139,7 +143,7 @@ export default {
     rowsPerPageOptions: {
       type: Array,
       required: false,
-      default: () => [50, 100, 200, 1000]
+      default: () => [20, 50, 100, 1000]
     },
     sortedField: {
       type: String,
