@@ -36,6 +36,7 @@ export default defineConfig({
     fs: {
       allow: [
         '/usr/src/app/node_modules/primeicons/',
+        '/usr/src/app/node_modules/vue3-json-viewer/',
         '/usr/src/app/node_modules/vite/dist/client',
         '/usr/src/app/src'
       ]

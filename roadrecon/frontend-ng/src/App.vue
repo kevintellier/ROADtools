@@ -42,3 +42,9 @@ export default {
 }
 </script>
 
+<style>
+  .p-card {
+    height: min-content;
+  }
+</style>
+

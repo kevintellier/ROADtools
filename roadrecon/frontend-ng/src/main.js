@@ -5,6 +5,7 @@ import axios from './plugins/axios'
 import PrimeVue from 'primevue/config';
 import Noir from './presets/Noir.js';
 import ToastService from 'primevue/toastservice';
+import JsonViewer from "vue3-json-viewer";
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -33,6 +34,9 @@ app.config.globalProperties.$dayjs = dayjs
 
 //Notification service
 app.use(ToastService)
+
+//JSON Viewer
+app.use(JsonViewer);
 
 //Components
 app.component("DataTable",DataTable)

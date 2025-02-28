@@ -59,9 +59,7 @@
                                         <TabPanel value="1">
                                             <div class="overflow-x-auto">
                                                 <pre id="code" class="text-gray-300">
-            <code>
-                {{ rawObject }}
-            </code>
+                                                    <JsonViewer style="background: none;" :value="rawObject" copyable sort expanded theme="dark"/>
         </pre>
                                             </div>
                                         </TabPanel>
@@ -119,6 +117,8 @@ import axios from 'axios'
 import Card from 'primevue/card';
 import Tag from 'primevue/tag';
 import DataView from 'primevue/dataview';
+import {JsonViewer} from "vue3-json-viewer"
+import "vue3-json-viewer/dist/index.css";
 import { showError } from '../services/toast';
 
 const filters = ref();
@@ -706,3 +706,9 @@ export default {
     }
 }
 </script>
+
+<style>
+    .jv-container .jv-code.open {
+        padding: 0 !important;
+    }
+</style>
